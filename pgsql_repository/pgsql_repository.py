@@ -10,8 +10,10 @@ from pgsql_repository.pgsql_filterable import PGSQLFilterable
 T = TypeVar('T')
 
 
-def session_wrapper(func: Callable):
+def inject_session(func: Callable):
     def wrapper(self: PGSQLRepository, *args, **kwargs):
+        if not isinstance(self, PGSQLRepository):
+            raise Exception('Cannot inject session into function not part of PGSQLRepository class')
         with self._open_session() as session:
             session.begin()
             try:
@@ -34,28 +36,28 @@ class PGSQLRepository(Generic[T]):
     def _open_session(self):
         return self._session()
 
-    @session_wrapper
+    @inject_session
     def get_by_id(self, session: Session) -> T:
         return session.query(T).get(id)
 
-    @session_wrapper
+    @inject_session
     def get_all(self, session: Session, pageable: Optional[Pageable] = None) -> List[T]:
         return session.query(T).all()
 
-    @session_wrapper
+    @inject_session
     def get_by_filterable(self, session: Session, filterable: PGSQLFilterable, pageable: Optional[Pageable] = None) \
             -> List[T] | PagedResult[List[T]]:
         return session.query(T).all()
 
-    @session_wrapper
+    @inject_session
     def create(self, session: Session, model: T) -> T:
         session.query(T).add_entity(model)
         return model
 
-    @session_wrapper
+    @inject_session
     def update(self, session: Session, model: T) -> T:
         return session.query(T).filter(T.id == model.id).update(model.__dict__)
 
-    @session_wrapper
+    @inject_session
     def delete(self, session: Session, model_id: int) -> None:
         return session.query(T).filter(T.id == model_id).delete()
