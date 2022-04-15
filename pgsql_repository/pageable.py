@@ -13,8 +13,7 @@ class Sortable:
 
 
 class Pageable:
-    def __init__(self, page: int, count: int, sorting: Sortable):
+    def __init__(self, page: int = 1, size: int = 25, sorting: Sortable = Sortable('id', SortDirection.ASC)):
         self.page = page
-        self.count = count
+        self.size = size
         self.sorting = sorting
-
