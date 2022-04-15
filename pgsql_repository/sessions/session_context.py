@@ -7,12 +7,14 @@ class SessionContext:
         self.session: Session
 
     def __enter__(self):
-        self.session = Session(binds=self.engine)
+        self.session = Session(bind=self.engine)
         self.session.begin()
         return self.session
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type or exc_val or exc_tb:
             self.session.rollback()
+            return False
+
         self.session.commit()
         self.session.close()

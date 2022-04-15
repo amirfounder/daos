@@ -16,12 +16,12 @@ T = TypeVar('T')
 
 
 class Repository(Generic[T]):
-    def __init__(self, entity: Entity, connection_string: str):
+    def __init__(self, connection_string: str, entity: Entity, metadata: Optional[Metadata] = Metadata):
         self.entity = entity
         self.connection_string = connection_string
+        self.metadata = metadata
         self.engine = create_engine(self.connection_string, future=True)
         self.session_builder = SessionBuilder(self.engine)
-        self.metadata = Metadata
         self.metadata.create_all(bind=self.engine)
 
     # noinspection PyMethodMayBeStatic
@@ -43,7 +43,7 @@ class Repository(Generic[T]):
                 stmt = self._paginate_select(stmt, pageable)
             return session.execute(stmt).scalars().all()
 
-    def get_all_by_filterable(self, f: Filterable, p: Optional[Pageable] = None) -> List[T] | PagedResult[List[T]]:
+    def get_all_by_filterable(self, f: Filterable, p: Optional[Pageable] = None) -> List[T] | PagedResult[T]:
         with self.session_builder.open() as session:
             stmt = select(self.entity)
             stmt = self._filter_select(stmt, f)
@@ -51,9 +51,16 @@ class Repository(Generic[T]):
                 stmt = self._paginate_select(stmt, p)
             return session.execute(stmt).scalars().all()
 
+    def get_distinct_by_column(self, column: str):
+        with self.session_builder.open() as session:
+            if column not in self.entity.columns():
+                raise Exception(f'Column not found : {self.entity} - {column}.')
+            return session.execute(select(getattr(self.entity, column)).distinct().scalars().all())
+
     def create(self, model: T) -> T:
         with self.session_builder.open() as session:
-            return session.execute(insert(self.entity).values(**model.as_dict())).scalars().first()
+            pk = session.execute(insert(self.entity).values(**model.as_dict())).inserted_primary_key
+            return session.get(self.entity, pk)
 
     def create_in_batch(self, _: Session, models: List[T]) -> List[T]:
         return [self.create(m) for m in models]

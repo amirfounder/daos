@@ -1,9 +1,9 @@
-from typing import TypeVar, Generic, Callable
+from typing import TypeVar, Generic, Callable, Optional, List, Any
 
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from pgsql_repository import Pageable
+from pgsql_repository import Pageable, PagedResult
 from pgsql_repository.core import Base, Metadata
 from pgsql_repository.repository import SessionBuilder
 
@@ -28,11 +28,14 @@ class Repository(Generic[T]):
     Base repository containing default CRUD methods
     """
 
-    def __init__(self, entity: Base, connection_string: str):
+    def __init__(self, connection_string: str, entity: Base, metadata: Optional[Metadata] = Metadata):
         """
         Initializes the repository
         :param connection_string: The connection string (i.e. postgresql://postgres:root@localhost:5432/postgres)
         """
+        ...
+
+    def _paginate_select(self, stmt: Any, pageable: Pageable) -> Any:
         ...
 
     def _emit_table_ddl(self):
@@ -47,6 +50,9 @@ class Repository(Generic[T]):
         ...
 
     def get_by_id(self, id: int) -> T:
+        ...
+
+    def get_all(self) -> List[T] | PagedResult[T]:
         ...
 
     def _get_all_by_pageable(self, session: Session, pageable: Pageable):

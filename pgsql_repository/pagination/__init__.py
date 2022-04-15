@@ -1,3 +1,3 @@
-from pagedresult import *
-from pageable import *
-from sortable import *
+from .pagedresult import *
+from .pageable import *
+from .sortable import *
