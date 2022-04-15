@@ -14,7 +14,7 @@ def init(self):
 
 
 def as_dict(self):
-    return {n: getattr(self, n) for n in self.get_columns()}
+    return {n: v for n in self.get_columns() if (v := getattr(self, n, None))}
 
 
 def from_dict(self, kwargs):
