@@ -1,1 +1,1 @@
-from .filterable import Filterable
+from .filterable import *

@@ -24,8 +24,9 @@ class Repository(Generic[T]):
         self.metadata = Metadata
         self.metadata.create_all(bind=self.engine)
 
-    def _paginate_select(self, stmt: Any, pageable: Pageable) -> Any:
-        pass
+    # noinspection PyMethodMayBeStatic
+    def _paginate_select(self, stmt: Any, p: Pageable) -> Any:
+        return stmt.offset(p.page * p.size).limit(p.size)
 
     def _filter_select(self, stmt: any, f: Filterable) -> Any:
         for k, v in f.filters.items():
@@ -54,19 +55,19 @@ class Repository(Generic[T]):
         with self.session_builder.open() as session:
             return session.execute(insert(self.entity).values(**model.as_dict())).scalars().first()
 
-    def create_in_batch(self, _: Session, models: List[T]):
+    def create_in_batch(self, _: Session, models: List[T]) -> List[T]:
         return [self.create(m) for m in models]
 
     def update(self, model: T) -> T:
         with self.session_builder.open() as session:
             return session.query(T).filter(T.id == model.id).update(model.__dict__)
 
-    def update_in_batch(self, _: Session, models: T):
+    def update_in_batch(self, _: Session, models: T) -> List[T]:
         return [self.update(m) for m in models]
 
     def delete(self, model_id: int) -> None:
         with self.session_builder.open() as s:
-            return s.query(T).filter(T.id == model_id).delete()
+            s.query(T).filter(T.id == model_id).delete()
 
-    def delete_in_batch(self, model_ids: List[int]):
-        return [self.delete(m) for m in model_ids]
+    def delete_in_batch(self, model_ids: List[int]) -> None:
+        [self.delete(m) for m in model_ids]
