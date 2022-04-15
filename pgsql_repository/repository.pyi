@@ -4,7 +4,8 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
 from pgsql_repository import Pageable
-from pgsql_repository.core import Base
+from pgsql_repository.core import Base, Metadata
+from pgsql_repository.repository import SessionBuilder
 
 T = TypeVar('T')
 
@@ -21,6 +22,8 @@ class Repository(Generic[T]):
     entity: Base
     connection_string: str
     engine: Engine
+    session_builder: SessionBuilder
+    metadata: Metadata
     """
     Base repository containing default CRUD methods
     """
