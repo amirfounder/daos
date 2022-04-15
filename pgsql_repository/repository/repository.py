@@ -1,14 +1,14 @@
 from __future__ import annotations
-from typing import Generic, TypeVar, List, Optional, Callable, Any
+from typing import Generic, TypeVar, List, Optional, Any
 
 from sqlalchemy import select, insert, func
 from sqlalchemy.engine import create_engine
 from sqlalchemy.orm import Session
 
 from pgsql_repository.core import Metadata
-from pgsql_repository.pageable import Pageable
-from pgsql_repository.pagedresult import PagedResult
-from pgsql_repository.filterable import Filterable
+from pgsql_repository.pagination.pageable import Pageable
+from pgsql_repository.pagination.pagedresult import PagedResult
+from pgsql_repository.filtering.filterable import Filterable
 from pgsql_repository.entity import Base as Entity
 from pgsql_repository.sessions import SessionBuilder
 
@@ -42,7 +42,7 @@ class Repository(Generic[T]):
                 stmt = self._paginate_select(stmt, pageable)
             return session.execute(stmt).scalars().all()
 
-    def get_by_filterable(self, f: Filterable, p: Optional[Pageable] = None) -> List[T] | PagedResult[List[T]]:
+    def get_all_by_filterable(self, f: Filterable, p: Optional[Pageable] = None) -> List[T] | PagedResult[List[T]]:
         with self.session_builder.open() as session:
             stmt = select(self.entity)
             stmt = self._filter_select(stmt, f)
@@ -67,3 +67,6 @@ class Repository(Generic[T]):
     def delete(self, model_id: int) -> None:
         with self.session_builder.open() as s:
             return s.query(T).filter(T.id == model_id).delete()
+
+    def delete_in_batch(self, model_ids: List[int]):
+        return [self.delete(m) for m in model_ids]

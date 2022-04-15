@@ -1,3 +1,7 @@
+"""
+Global variables from SQL Alchemy
+"""
+
 from sqlalchemy.orm import registry, DeclarativeMeta
 from sqlalchemy import MetaData
 

@@ -1,13 +1,4 @@
-from __future__ import annotations
 from sqlalchemy.orm import Session
-
-
-class SessionBuilder:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def open(self) -> SessionContext:
-        return SessionContext(self.engine)
 
 
 class SessionContext:
