@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-from pgsql_repository.sessions.session_context import SessionContext
+from pgsql_repository.repository.sessions.session_context import SessionContext
 
 
 class SessionBuilder:

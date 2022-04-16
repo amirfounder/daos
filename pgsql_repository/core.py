@@ -1,5 +1,5 @@
 """
-Global variables from SQL Alchemy
+Global "singletons" from SQL Alchemy
 """
 
 from sqlalchemy.orm import registry, DeclarativeMeta

@@ -1,68 +1,18 @@
 from __future__ import annotations
 from typing import Generic, TypeVar, List, Optional, Any
 
-from sqlalchemy import select, insert, func, Column
-from sqlalchemy.engine import create_engine, Engine
+from sqlalchemy import select, insert, func, update, delete
+from sqlalchemy.engine import create_engine
 
 from pgsql_repository.core import Metadata
 from pgsql_repository.pagination.pageable import Pageable
 from pgsql_repository.pagination.pagedresult import PagedResult
 from pgsql_repository.filtering.filterable import Filterable
 from pgsql_repository.entity import Entity
-from pgsql_repository.sessions import SessionBuilder
+from pgsql_repository.repository.schema_loader import SchemaLoader
+from pgsql_repository.repository.sessions import SessionBuilder
 
 T = TypeVar('T')
-
-
-class SchemaLoader:
-    def __init__(
-            self,
-            model: Entity,
-            metadata: Metadata,
-            engine: Engine,
-            session_builder: SessionBuilder
-    ):
-        self.model = model
-        self.metadata = metadata
-        self.engine = engine
-        self.session_builder = session_builder
-
-    def _get_pgsql_columns_by_table(self, name: str):
-        with self.session_builder.open() as session:
-            return session.execute(
-                '''
-                select column_name
-                from information_schema.columns
-                where table_name = '{table}'
-                and table_schema = 'public'
-                '''.format(table=name)
-            ).scalars().all()
-
-    def _remove_columns(self, table: str, columns: List[str]):
-        drop_column_statements = ', '.join([f'DROP COLUMN {c}' for c in columns])
-        alter_table_statement = f'ALTER TABLE {table} {drop_column_statements};'
-        with self.session_builder.open() as session:
-            session.execute(alter_table_statement)
-
-    def _create_columns(self, table: str, columns: List[Column]):
-        add_column_statements = ', '.join([f'ADD COLUMN {c.name} {c.type.compile()}' for c in columns])
-        alter_table_statement = f'ALTER TABLE {table} {add_column_statements}'
-        with self.session_builder.open() as session:
-            session.execute(alter_table_statement)
-
-    def load(self):
-        for table in self.metadata.tables:
-            model_columns_map = self.model.get_columns()
-            model_columns = [k for k in model_columns_map]
-            pgsql_columns = self._get_pgsql_columns_by_table(table)
-
-            columns_to_remove = [c for c in pgsql_columns if c not in model_columns]
-            columns_to_create = [model_columns_map.get(c) for c in model_columns if c not in pgsql_columns]
-
-            if columns_to_create:
-                self._create_columns(table, columns_to_create)
-            if columns_to_remove:
-                self._remove_columns(table, columns_to_remove)
 
 
 class Repository(Generic[T]):
@@ -86,6 +36,10 @@ class Repository(Generic[T]):
     def get_by_id(self, _id: int) -> T:
         with self.session_builder.open() as session:
             return session.get(self.entity, _id)
+
+    def get_by_id_in_batch(self, ids: List[int]):
+        with self.session_builder.open() as session:
+            return session.execute(select(self.entity).where(self.entity.id in ids)).scalars().all()
     
     def get_all(self, pageable: Optional[Pageable] = None) -> List[T]:
         with self.session_builder.open() as session:
@@ -113,19 +67,22 @@ class Repository(Generic[T]):
             pk = session.execute(insert(self.entity).values(**model.to_dict())).inserted_primary_key
             return session.get(self.entity, pk)
 
-    def create_in_batch(self, models: List[T]) -> List[T]:
-        return [self.create(m) for m in models]
+    def create_in_batch(self, models: List[T]) -> None:
+        with self.session_builder.open() as session:
+            session.execute(insert(self.entity).values([m.to_dict() for m in models]))
 
     def update(self, model: T) -> T:
         with self.session_builder.open() as session:
             return session.query(T).filter(T.id == model.id).update(model.__dict__)
 
-    def update_in_batch(self, models: T) -> List[T]:
-        return [self.update(m) for m in models]
+    def update_in_batch(self, models: T) -> None:
+        with self.session_builder.open() as session:
+            session.execute(update(self.entity).values([m.to_dict() for m in models]))
 
-    def delete(self, model_id: int) -> None:
+    def delete(self, _id: int) -> None:
         with self.session_builder.open() as s:
-            s.query(T).filter(T.id == model_id).delete()
+            s.execute(delete(self.entity).where(self.entity.id == _id))
 
-    def delete_in_batch(self, model_ids: List[int]) -> None:
-        [self.delete(m) for m in model_ids]
+    def delete_in_batch(self, ids: List[int]) -> None:
+        with self.session_builder.open() as s:
+            s.execute(delete(self.entity).where(self.entity.id in ids))
