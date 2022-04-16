@@ -20,7 +20,7 @@ class SchemaLoader:
         self.engine = engine
         self.session_builder = session_builder
 
-    def _get_pgsql_columns_by_table(self, name: str):
+    def _get_pgsql_columns_by_table(self, table: str):
         with self.session_builder.open() as session:
             return session.execute(
                 '''
@@ -28,7 +28,7 @@ class SchemaLoader:
                 from information_schema.columns
                 where table_name = '{table}'
                 and table_schema = 'public'
-                '''.format(table=name)
+                '''.format(table=table)
             ).scalars().all()
 
     def _remove_columns(self, table: str, columns: List[str]):
