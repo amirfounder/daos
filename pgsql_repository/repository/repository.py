@@ -3,13 +3,12 @@ from typing import Generic, TypeVar, List, Optional, Any
 
 from sqlalchemy import select, insert, func, Column
 from sqlalchemy.engine import create_engine, Engine
-from sqlalchemy.orm import Session
 
 from pgsql_repository.core import Metadata
 from pgsql_repository.pagination.pageable import Pageable
 from pgsql_repository.pagination.pagedresult import PagedResult
 from pgsql_repository.filtering.filterable import Filterable
-from pgsql_repository.entity import Base as Entity
+from pgsql_repository.entity import Entity
 from pgsql_repository.sessions import SessionBuilder
 
 T = TypeVar('T')
@@ -53,7 +52,6 @@ class SchemaLoader:
 
     def load(self):
         for table in self.metadata.tables:
-            # noinspection PyArgumentList
             model_columns_map = self.model.get_columns()
             model_columns = [k for k in model_columns_map]
             pgsql_columns = self._get_pgsql_columns_by_table(table)
@@ -115,14 +113,14 @@ class Repository(Generic[T]):
             pk = session.execute(insert(self.entity).values(**model.to_dict())).inserted_primary_key
             return session.get(self.entity, pk)
 
-    def create_in_batch(self, _: Session, models: List[T]) -> List[T]:
+    def create_in_batch(self, models: List[T]) -> List[T]:
         return [self.create(m) for m in models]
 
     def update(self, model: T) -> T:
         with self.session_builder.open() as session:
             return session.query(T).filter(T.id == model.id).update(model.__dict__)
 
-    def update_in_batch(self, _: Session, models: T) -> List[T]:
+    def update_in_batch(self, models: T) -> List[T]:
         return [self.update(m) for m in models]
 
     def delete(self, model_id: int) -> None:

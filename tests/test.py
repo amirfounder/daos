@@ -23,7 +23,7 @@ class CarFactory(Factory[Car]):
     pass
 
 
-car_factory = CarFactory()
+car_factory = CarFactory(Car)
 car_repository = CarRepository()
 
 

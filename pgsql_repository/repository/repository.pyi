@@ -3,7 +3,7 @@ from typing import TypeVar, Generic, Callable, Optional, List, Any
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 
-from pgsql_repository import Pageable, PagedResult
+from pgsql_repository import Pageable, PagedResult, Filterable
 from pgsql_repository.core import Base, Metadata
 from pgsql_repository.repository import SessionBuilder
 from pgsql_repository.repository.repository import SchemaLoader
@@ -37,11 +37,9 @@ class Repository(Generic[T]):
         """
         ...
 
-    def _paginate_select(self, stmt: Any, pageable: Pageable) -> Any:
-        ...
+    def _filter_select(self, stmt: Any, filterable: Filterable): ...
 
-    def _emit_table_ddl(self):
-        ...
+    def _paginate_select(self, stmt: Any, pageable: Pageable): ...
 
     def create(self, model: T) -> T:
         """
