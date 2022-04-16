@@ -1,19 +1,11 @@
 import string
 import random
-from abc import abstractmethod, ABC
-from datetime import datetime
-from typing import Any
+from datetime import datetime, timezone
+
+from pgsql_repository.extensions.factory.random_generators.base import RandomGenerator
 
 
-class RandomTypeGenerator(ABC):
-    @abstractmethod
-    def __init__(self, **kwargs): ...
-
-    @abstractmethod
-    def get(self) -> Any: ...
-
-
-class RandomStr(RandomTypeGenerator):
+class RandomStr(RandomGenerator):
     def __init__(
             self,
             include_upper: bool = True,
@@ -38,7 +30,7 @@ class RandomStr(RandomTypeGenerator):
         return ''.join([self.pool[random.randint(0, len(self.pool) - 1)] for _ in range(self.length)])
 
 
-class RandomInt(RandomTypeGenerator):
+class RandomInt(RandomGenerator):
     def __init__(self, _min: int = 0, _max: int = 1000):
         self.min = _min
         self.max = _max
@@ -47,7 +39,7 @@ class RandomInt(RandomTypeGenerator):
         return random.randint(self.min, self.max)
 
 
-class RandomFloat(RandomTypeGenerator):
+class RandomFloat(RandomGenerator):
     def __init__(self, _min: bool = 0, _max: bool = 1000, decimals: int = 2):
         self.min = _max
         self.max = _min
@@ -57,8 +49,12 @@ class RandomFloat(RandomTypeGenerator):
         return round(random.uniform(self.min, self.max), self.decimals)
 
 
-class RandomDatetime(RandomTypeGenerator):
-    def __init__(self, start: datetime = datetime(1995, 1, 1), end: datetime = datetime.now()):
+class RandomDatetime(RandomGenerator):
+    def __init__(
+            self,
+            start: datetime = datetime(1995, 1, 1, tzinfo=timezone.utc),
+            end: datetime = datetime.now(timezone.utc)
+    ):
         self.start = start
         self.end = end
 

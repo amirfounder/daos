@@ -1,15 +1,13 @@
-from typing import TypeVar, Generic, Callable, Optional, List, Any, Type
+from typing import TypeVar, Callable, Optional, List, Any, Type
 
 from sqlalchemy.engine import Engine
 
 from pgsql_repository.model.model import BaseModel
 from pgsql_repository.filtering import BaseFilterable
 from pgsql_repository.pagination import Pageable, PagedResult
-from pgsql_repository.core import Base, Metadata
+from pgsql_repository.core import Metadata
 from pgsql_repository.repository.sessions import SessionBuilder
 from pgsql_repository.repository.schema_loader import SchemaLoader
-
-T = TypeVar('T')
 
 
 def session_wrapper(func: Callable):
@@ -31,32 +29,35 @@ class BaseModelRepository:
     Base repository containing default CRUD methods
     """
 
-    def __init__(self, connection_string: str, model: BaseModel, metadata: Optional[Metadata] = Metadata):
+    def __init__(self, connection_string: str, model: Type[BaseModel], metadata: Optional[Metadata] = Metadata):
         """
         Initializes the repository
         :param connection_string: The connection string (i.e. postgresql://postgres:root@localhost:5432/postgres)
         """
         ...
 
-    def _filter_select(self, stmt: Any, filterable: BaseFilterable): ...
-
-    def _paginate_select(self, stmt: Any, pageable: Pageable): ...
-
-    def get_by_id(self, id: int) -> T:
-        ...
-    def get_by_id_in_batch(self, ids: List[int]) -> List[T]:
+    def _filter_select(self, stmt: Any, filterable: BaseFilterable):
         ...
 
-    def get_all(self, pageable: Optional[Pageable] = None) -> List[T] | PagedResult[T]:
+    def _paginate_select(self, stmt: Any, pageable: Pageable):
         ...
 
-    def get_all_by_filter(self, filterable: BaseFilterable, pageable: Optional[Pageable] = None) -> List[T] | PagedResult[T]:
+    def get_by_id(self, id: int) -> BaseModel:
+        ...
+    
+    def get_by_id_in_batch(self, ids: List[int]) -> List[BaseModel]:
         ...
 
-    def get_distinct_by_column(self, column_name: str):
+    def get_all(self, pageable: Optional[Pageable] = None) -> List[BaseModel] | PagedResult[BaseModel]:
         ...
 
-    def create(self, model: T) -> T:
+    def get_all_by_filter(self, filterable: BaseFilterable, pageable: Optional[Pageable] = None) -> List[BaseModel] | PagedResult[BaseModel]:
+        ...
+
+    def get_distinct_by_column(self, column_name: str) -> Any:
+        ...
+
+    def create(self, model: BaseModel) -> BaseModel:
         """
         Creates an instance of the model in the database
         :param model: The model to create
@@ -64,13 +65,13 @@ class BaseModelRepository:
         """
         ...
 
-    def create_in_batch(self, models: List[T]) -> None:
+    def create_in_batch(self, models: List[BaseModel]) -> None:
         ...
 
-    def update(self, model: T) -> T:
+    def update(self, model: BaseModel) -> BaseModel:
         ...
 
-    def update_in_batch(self, models: T) -> None:
+    def update_in_batch(self, models: BaseModel) -> None:
         ...
 
     def delete(self, _id: int) -> None:

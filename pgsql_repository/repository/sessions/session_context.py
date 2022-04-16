@@ -16,5 +16,6 @@ class SessionContext:
             self.session.rollback()
             return False
 
+        self.session.expunge_all()
         self.session.commit()
         self.session.close()

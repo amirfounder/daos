@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+from datetime import timezone, datetime
 from typing import List, Optional, Any, Type
 
 from sqlalchemy import func, select, insert, update, delete
@@ -27,23 +29,13 @@ class BaseModelRepository:
     def _paginate_select(self, sql_query: Any, p: Pageable) -> BaseModel:
         return sql_query.offset(p.page * p.size).limit(p.size)
 
-    def _filter_select(self, sql_query: any, f: BaseFilterable) -> Any:
-        for key, value in f.filters.items():
-            sql_query = sql_query.where(
-                getattr(self.model, key) == (
-                    func.lower(value) if
-                    isinstance(value, str)
-                    else value
-                )
-            )
-
     def get_by_id(self, _id: int) -> BaseModel:
         with self.session_builder.open() as session:
             return session.get(self.model, _id)
 
     def get_by_id_in_batch(self, ids: List[int]):
         with self.session_builder.open() as session:
-            return session.execute(select(self.model).where(self.model.id in ids)).scalars().all()
+            return session.execute(select(self.model).where(self.model.id.in_(ids))).scalars().all()
     
     def get_all(self, pageable: Optional[Pageable] = None) -> List[BaseModel]:
         with self.session_builder.open() as session:
@@ -56,7 +48,14 @@ class BaseModelRepository:
             -> List[BaseModel] | PagedResult[BaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
-            sql_query = self._filter_select(sql_query, filterable)
+            for key, value in filterable.filters.items():
+                sql_query = sql_query.where(
+                    getattr(self.model, key) == (
+                        func.lower(value) if
+                        isinstance(value, str)
+                        else value
+                    )
+                )
             if pageable:
                 sql_query = self._paginate_select(sql_query, pageable)
             return session.execute(sql_query).scalars().all()
@@ -68,21 +67,32 @@ class BaseModelRepository:
             return session.execute(select(getattr(self.model, column_name)).distinct().scalars().all())
 
     def create(self, instance: BaseModel) -> BaseModel:
+        now = datetime.now(timezone.utc)
+        instance.created_at = now
+        instance.updated_at = now
         with self.session_builder.open() as session:
             pk = session.execute(insert(self.model).values(**instance.to_dict())).inserted_primary_key
             return session.get(self.model, pk)
 
     def create_in_batch(self, instances: List[BaseModel]) -> None:
+        for instance in instances:
+            now = datetime.now(timezone.utc)
+            instance.created_at = now
+            instance.updated_at = now
         with self.session_builder.open() as session:
             session.execute(insert(self.model).values([instance.to_dict() for instance in instances]))
 
     def update(self, instance: BaseModel) -> BaseModel:
+        instance.updated_at = datetime.now(timezone.utc)
         with self.session_builder.open() as session:
-            return session.sql_query(self.model).filter(self.model.id == instance.id).update(instance.to_dict())
+            return session.execute(update(self.model).where(self.model.id == instance.id).values(instance.to_dict()))
 
     def update_in_batch(self, instances: List[BaseModel]) -> None:
+        for instance in instances:
+            instance.updated_at = datetime.now(timezone.utc)
         with self.session_builder.open() as session:
-            session.execute(update(self.model).values([instance.to_dict() for instance in instances]))
+            for instance in instances:
+                session.execute(update(self.model).where(self.model.id == instance.id).values(instance.to_dict()))
 
     def delete(self, _id: int) -> None:
         with self.session_builder.open() as session:

@@ -25,6 +25,9 @@ class BaseModel:
         """
         ...
 
+    def from_dict(self):
+        pass
+
     @classmethod
     def get_columns(cls) -> Dict[str, Column]:
         """
