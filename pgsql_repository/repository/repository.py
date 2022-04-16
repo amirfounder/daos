@@ -1,8 +1,8 @@
 from __future__ import annotations
 from typing import Generic, TypeVar, List, Optional, Any
 
-from sqlalchemy import select, insert, func
-from sqlalchemy.engine import create_engine
+from sqlalchemy import select, insert, func, Column
+from sqlalchemy.engine import create_engine, Engine
 from sqlalchemy.orm import Session
 
 from pgsql_repository.core import Metadata
@@ -15,6 +15,58 @@ from pgsql_repository.sessions import SessionBuilder
 T = TypeVar('T')
 
 
+class SchemaLoader:
+    def __init__(
+            self,
+            model: Entity,
+            metadata: Metadata,
+            engine: Engine,
+            session_builder: SessionBuilder
+    ):
+        self.model = model
+        self.metadata = metadata
+        self.engine = engine
+        self.session_builder = session_builder
+
+    def _get_pgsql_columns_by_table(self, name: str):
+        with self.session_builder.open() as session:
+            return session.execute(
+                '''
+                select column_name
+                from information_schema.columns
+                where table_name = '{table}'
+                and table_schema = 'public'
+                '''.format(table=name)
+            ).scalars().all()
+
+    def _remove_columns(self, table: str, columns: List[str]):
+        drop_column_statements = ', '.join([f'DROP COLUMN {c}' for c in columns])
+        alter_table_statement = f'ALTER TABLE {table} {drop_column_statements};'
+        with self.session_builder.open() as session:
+            session.execute(alter_table_statement)
+
+    def _create_columns(self, table: str, columns: List[Column]):
+        add_column_statements = ', '.join([f'ADD COLUMN {c.name} {c.type.compile()}' for c in columns])
+        alter_table_statement = f'ALTER TABLE {table} {add_column_statements}'
+        with self.session_builder.open() as session:
+            session.execute(alter_table_statement)
+
+    def load(self):
+        for table in self.metadata.tables:
+            # noinspection PyArgumentList
+            model_columns_map = self.model.get_columns(self.model)
+            model_columns = [k for k in model_columns_map]
+            pgsql_columns = self._get_pgsql_columns_by_table(table)
+
+            columns_to_remove = [c for c in pgsql_columns if c not in model_columns]
+            columns_to_create = [model_columns_map.get(c) for c in model_columns if c not in pgsql_columns]
+
+            if columns_to_create:
+                self._create_columns(table, columns_to_create)
+            if columns_to_remove:
+                self._remove_columns(table, columns_to_remove)
+
+
 class Repository(Generic[T]):
     def __init__(self, connection_string: str, entity: Entity, metadata: Optional[Metadata] = Metadata):
         self.entity = entity
@@ -22,7 +74,8 @@ class Repository(Generic[T]):
         self.metadata = metadata
         self.engine = create_engine(self.connection_string, future=True)
         self.session_builder = SessionBuilder(self.engine)
-        self.metadata.create_all(bind=self.engine)
+        self.schema_loader = SchemaLoader(self.entity, self.metadata, self.engine, self.session_builder)
+        self.schema_loader.load()
 
     # noinspection PyMethodMayBeStatic
     def _paginate_select(self, stmt: Any, p: Pageable) -> Any:
@@ -53,7 +106,7 @@ class Repository(Generic[T]):
 
     def get_distinct_by_column(self, column: str):
         with self.session_builder.open() as session:
-            if column not in self.entity.columns():
+            if column not in self.entity.get_columns():
                 raise Exception(f'Column not found : {self.entity} - {column}.')
             return session.execute(select(getattr(self.entity, column)).distinct().scalars().all())
 

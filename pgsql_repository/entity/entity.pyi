@@ -9,7 +9,6 @@ class Base:
     id: Column(BigInteger, primary_key=True)
     created_at: datetime.datetime
     updated_at: datetime.datetime
-    columns: Callable
     """
     Entity base class
     """
@@ -23,7 +22,7 @@ class Base:
         """
         ...
 
-    def fields(self) -> List[str]:
+    def get_columns(self) -> Dict[str, Column]:
         """
         :return:
         """

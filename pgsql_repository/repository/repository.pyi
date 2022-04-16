@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 from pgsql_repository import Pageable, PagedResult
 from pgsql_repository.core import Base, Metadata
 from pgsql_repository.repository import SessionBuilder
+from pgsql_repository.repository.repository import SchemaLoader
 
 T = TypeVar('T')
 
@@ -23,6 +24,7 @@ class Repository(Generic[T]):
     connection_string: str
     engine: Engine
     session_builder: SessionBuilder
+    schema_loader: SchemaLoader
     metadata: Metadata
     """
     Base repository containing default CRUD methods

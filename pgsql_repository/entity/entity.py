@@ -5,12 +5,13 @@ from sqlalchemy import Integer, Column, DateTime
 from pgsql_repository.core import Base
 
 
-def init(self):
-    # self.from_dict(kwargs)
+def init(self, **kwargs):
     # noinspection PyArgumentList
     super(Base, self).__init__()
     self.created_at = datetime.datetime.now(datetime.timezone.utc)
     self.created_at = datetime.datetime.now(datetime.timezone.utc)
+
+    self.from_dict(kwargs)
 
 
 def as_dict(self):
@@ -20,13 +21,13 @@ def as_dict(self):
 def from_dict(self, kwargs):
     for k, v in kwargs.items():
         if k in (columns := self.get_columns()):
-            # if columns.get(k).primary_key:
-            #     raise Exception('Cannot assign primary key.')
+            if columns.get(k).primary_key:
+                raise Exception('Cannot assign primary key.')
             setattr(self, k, v)
 
 
-def get_columns(self):
-    return {c.name: c for c in self.metadata.tables.get(self.__tablename__).columns}
+def get_columns(cls):
+    return {c.name: c for c in cls.metadata.tables.get(cls.__tablename__).columns}
 
 
 Base.__init__ = init

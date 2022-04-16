@@ -1,4 +1,4 @@
-from sqlalchemy import Integer, Column, String
+from sqlalchemy import Column, String
 
 from pgsql_repository import Entity, Repository
 
@@ -9,7 +9,7 @@ CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 class Car(Entity):
     __tablename__ = "cars"
 
-    name = Column(String)
+    model = Column(String)
 
 
 class CarRepository(Repository[Car]):
