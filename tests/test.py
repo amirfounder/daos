@@ -2,24 +2,24 @@ import datetime
 
 from sqlalchemy import Column, String
 
-from pgsql_repository import Entity, Repository
-from pgsql_repository.factory.factory import Factory
+from pgsql_repository import BaseModel, BaseModelRepository
+from pgsql_repository.factory.random_model_factory import BaseRandomModelFactory
 
 CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
 
-class Car(Entity):
+class Car(BaseModel):
     __tablename__ = "cars"
 
     model = Column(String)
 
 
-class CarRepository(Repository[Car]):
+class CarRepository(BaseModelRepository):
     def __init__(self):
         super().__init__(CONN_STRING, Car)
 
 
-class CarFactory(Factory[Car]):
+class CarFactory(BaseRandomModelFactory):
     pass
 
 

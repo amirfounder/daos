@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import AbstractConcreteBase
 from pgsql_repository.core import Base
 
 
-class Entity(AbstractConcreteBase, Base):
+class BaseModel(AbstractConcreteBase, Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)
     updated_at = Column(DateTime(True), default=datetime.datetime.utcnow)

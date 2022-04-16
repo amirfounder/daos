@@ -1,16 +1,16 @@
-from typing import List
+from typing import List, Type
 
 from sqlalchemy import Column, MetaData
 from sqlalchemy.engine import Engine
 
-from pgsql_repository.entity import Entity
+from pgsql_repository.model import BaseModel
 from pgsql_repository.repository.sessions import SessionBuilder
 
 
 class SchemaLoader:
     def __init__(
             self,
-            model: Entity,
+            model: Type[BaseModel],
             metadata: MetaData,
             engine: Engine,
             session_builder: SessionBuilder

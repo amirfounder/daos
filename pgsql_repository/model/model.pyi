@@ -6,14 +6,14 @@ from sqlalchemy import Column, BigInteger
 from pgsql_repository.core import Metadata
 
 
-class Entity:
+class BaseModel:
     __tablename__: str
     id: Column(BigInteger, primary_key=True)
     created_at: datetime.datetime
     updated_at: datetime.datetime
     metadata: Metadata
     """
-    Entity base class
+    BaseModel base class
     """
 
     def __init__(self, **kwargs): ...
@@ -25,7 +25,8 @@ class Entity:
         """
         ...
 
-    def get_columns(self) -> Dict[str, Column]:
+    @classmethod
+    def get_columns(cls) -> Dict[str, Column]:
         """
         :return:
         """
