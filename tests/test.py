@@ -1,7 +1,9 @@
+import datetime
+
 from sqlalchemy import Column, String
 
 from pgsql_repository import Entity, Repository
-
+from pgsql_repository.factory.factory import Factory
 
 CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
@@ -17,9 +19,22 @@ class CarRepository(Repository[Car]):
         super().__init__(CONN_STRING, Car)
 
 
-def test():
-    r = CarRepository()
-    r.create(Car())
+class CarFactory(Factory[Car]):
+    pass
 
-    cars = r.get_all()
+
+car_factory = CarFactory()
+car_repository = CarRepository()
+
+
+def test_creates():
+    cars = car_factory.create_many(25)
+    car_repository.create(cars[0])
+    car_repository.create_in_batch(cars[1:])
+
+
+def test_gets():
+    car_repository.create(Car())
+
+    cars = car_repository.get_all()
     print(cars)

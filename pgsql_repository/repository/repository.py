@@ -54,7 +54,7 @@ class SchemaLoader:
     def load(self):
         for table in self.metadata.tables:
             # noinspection PyArgumentList
-            model_columns_map = self.model.get_columns(self.model)
+            model_columns_map = self.model.get_columns()
             model_columns = [k for k in model_columns_map]
             pgsql_columns = self._get_pgsql_columns_by_table(table)
 
@@ -112,7 +112,7 @@ class Repository(Generic[T]):
 
     def create(self, model: T) -> T:
         with self.session_builder.open() as session:
-            pk = session.execute(insert(self.entity).values(**model.as_dict())).inserted_primary_key
+            pk = session.execute(insert(self.entity).values(**model.to_dict())).inserted_primary_key
             return session.get(self.entity, pk)
 
     def create_in_batch(self, _: Session, models: List[T]) -> List[T]:
