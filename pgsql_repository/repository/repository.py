@@ -20,9 +20,10 @@ class BaseModelRepository:
         self.model = model
         self.connection_string = connection_string
         self.metadata = metadata
+
         self.engine = create_engine(self.connection_string, future=True)
         self.session_builder = SessionBuilder(self.engine)
-        self.schema_loader = SchemaLoader(self.model, self.metadata, self.engine, self.session_builder)
+        self.schema_loader = SchemaLoader(self.model, self.metadata, self.session_builder)
         self.schema_loader.load()
 
     def get_by_id(self, _id: int) -> BaseModel:

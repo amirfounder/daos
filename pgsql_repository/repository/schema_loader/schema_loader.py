@@ -12,12 +12,10 @@ class SchemaLoader:
             self,
             model: Type[BaseModel],
             metadata: MetaData,
-            engine: Engine,
             session_builder: SessionBuilder
     ):
         self.model = model
         self.metadata = metadata
-        self.engine = engine
         self.session_builder = session_builder
 
     def _get_pgsql_columns_by_table(self, table: str):
