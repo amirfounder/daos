@@ -1,10 +1,10 @@
-from typing import TypeVar, Callable, Optional, List, Any, Type
+from typing import Callable, Optional, List, Any, Type
 
 from sqlalchemy.engine import Engine
 
 from pgsql_repository.model.model import BaseModel
 from pgsql_repository.filtering import BaseFilterable
-from pgsql_repository.pagination import Pageable, PagedResult
+from pgsql_repository.extensions.pagination import Pageable, PagedResult
 from pgsql_repository.core import Metadata
 from pgsql_repository.repository.sessions import SessionBuilder
 from pgsql_repository.repository.schema_loader import SchemaLoader

@@ -1,2 +1,2 @@
 from .factory import *
-from .random_generators import *
+from .generators import *

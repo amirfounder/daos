@@ -7,8 +7,8 @@ from sqlalchemy import func, select, insert, update, delete
 from sqlalchemy.engine import create_engine
 
 from pgsql_repository.core import Metadata
-from pgsql_repository.pagination.pageable import Pageable
-from pgsql_repository.pagination.pagedresult import PagedResult
+from pgsql_repository.extensions.pagination.pageable import Pageable
+from pgsql_repository.extensions.pagination.pagedresult import PagedResult
 from pgsql_repository.filtering.filterable import BaseFilterable
 from pgsql_repository.model import BaseModel
 from pgsql_repository.repository.schema_loader import SchemaLoader

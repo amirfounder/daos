@@ -4,12 +4,12 @@ from typing import Dict, Type, List
 from sqlalchemy import Column
 
 from pgsql_repository.core import Metadata
-from pgsql_repository.extensions.factory.random_generators.types import (
+from pgsql_repository.extensions.factory.generators.types import (
     RandomGenerator,
-    RandomDatetime,
-    RandomFloat,
-    RandomInt,
-    RandomStr
+    RandomDatetimeGenerator,
+    RandomFloatGenerator,
+    RandomIntGenerator,
+    RandomStrGenerator
 )
 from pgsql_repository.model.model import BaseModel
 
@@ -17,10 +17,10 @@ from pgsql_repository.model.model import BaseModel
 class BaseModelFactory:
     # default generators
     generator_map: Dict[Column | Type, RandomGenerator] = {
-        str: RandomStr(),
-        int: RandomInt(),
-        float: RandomFloat(),
-        datetime: RandomDatetime()
+        str: RandomStrGenerator(),
+        int: RandomIntGenerator(),
+        float: RandomFloatGenerator(),
+        datetime: RandomDatetimeGenerator()
     }
     
     def __init__(self, model: Type[BaseModel], metadata: Metadata = Metadata,):
