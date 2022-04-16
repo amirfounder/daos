@@ -4,7 +4,7 @@ from sqlalchemy.engine import Engine
 
 from pgsql_repository.model.model import BaseModel
 from pgsql_repository.filtering import BaseFilterable
-from pgsql_repository.extensions.pagination import Pageable, PagedResult
+from pgsql_repository.extensions.pagination import BasePageable, PagedResult
 from pgsql_repository.core import Metadata
 from pgsql_repository.repository.sessions import SessionBuilder
 from pgsql_repository.repository.schema_loader import SchemaLoader
@@ -39,7 +39,7 @@ class BaseModelRepository:
     def _filter_select(self, stmt: Any, filterable: BaseFilterable):
         ...
 
-    def _paginate_select(self, stmt: Any, pageable: Pageable):
+    def _paginate_select(self, stmt: Any, pageable: BasePageable):
         ...
 
     def get_by_id(self, id: int) -> BaseModel:
@@ -48,10 +48,10 @@ class BaseModelRepository:
     def get_by_id_in_batch(self, ids: List[int]) -> List[BaseModel]:
         ...
 
-    def get_all(self, pageable: Optional[Pageable] = None) -> List[BaseModel] | PagedResult[BaseModel]:
+    def get_all(self, pageable: Optional[BasePageable] = None) -> List[BaseModel] | PagedResult[BaseModel]:
         ...
 
-    def get_all_by_filter(self, filterable: BaseFilterable, pageable: Optional[Pageable] = None) -> List[BaseModel] | PagedResult[BaseModel]:
+    def get_all_by_filter(self, filterable: BaseFilterable, pageable: Optional[BasePageable] = None) -> List[BaseModel] | PagedResult[BaseModel]:
         ...
 
     def get_distinct_by_column(self, column_name: str) -> Any:

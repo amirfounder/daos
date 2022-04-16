@@ -1,13 +1,13 @@
 from __future__ import annotations
 
 from datetime import timezone, datetime
-from typing import List, Optional, Any, Type
+from typing import List, Optional, Type
 
-from sqlalchemy import func, select, insert, update, delete
+from sqlalchemy import select, insert, update, delete
 from sqlalchemy.engine import create_engine
 
 from pgsql_repository.core import Metadata
-from pgsql_repository.extensions.pagination.pageable import Pageable
+from pgsql_repository.extensions.pagination.pageable import BasePageable
 from pgsql_repository.extensions.pagination.pagedresult import PagedResult
 from pgsql_repository.filtering.filterable import BaseFilterable
 from pgsql_repository.model import BaseModel
@@ -25,10 +25,6 @@ class BaseModelRepository:
         self.schema_loader = SchemaLoader(self.model, self.metadata, self.engine, self.session_builder)
         self.schema_loader.load()
 
-    # noinspection PyMethodMayBeStatic
-    def _paginate_select(self, sql_query: Any, p: Pageable) -> BaseModel:
-        return sql_query.offset(p.page * p.size).limit(p.size)
-
     def get_by_id(self, _id: int) -> BaseModel:
         with self.session_builder.open() as session:
             return session.get(self.model, _id)
@@ -37,27 +33,20 @@ class BaseModelRepository:
         with self.session_builder.open() as session:
             return session.execute(select(self.model).where(self.model.id.in_(ids))).scalars().all()
     
-    def get_all(self, pageable: Optional[Pageable] = None) -> List[BaseModel]:
+    def get_all(self, pageable: Optional[BasePageable] = None) -> List[BaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
             if pageable:
-                sql_query = self._paginate_select(sql_query, pageable)
+                sql_query = pageable.apply(sql_query)
             return session.execute(sql_query).scalars().all()
 
-    def get_all_by_filterable(self, filterable: BaseFilterable, pageable: Optional[Pageable] = None)\
+    def get_all_by_filterable(self, filterable: BaseFilterable, pageable: Optional[BasePageable] = None)\
             -> List[BaseModel] | PagedResult[BaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
-            for key, value in filterable.filters.items():
-                sql_query = sql_query.where(
-                    getattr(self.model, key) == (
-                        func.lower(value) if
-                        isinstance(value, str)
-                        else value
-                    )
-                )
+            sql_query = filterable.apply(sql_query)
             if pageable:
-                sql_query = self._paginate_select(sql_query, pageable)
+                sql_query = pageable.apply(sql_query)
             return session.execute(sql_query).scalars().all()
 
     def get_distinct_by_column(self, column_name: str):
