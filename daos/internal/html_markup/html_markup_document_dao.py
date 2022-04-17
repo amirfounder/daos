@@ -1,0 +1,2 @@
+class HtmlMarkupDocumentDao:
+    pass

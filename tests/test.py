@@ -1,12 +1,12 @@
 from sqlalchemy import Column, String, select
 
-from database_dao import BaseModel, BaseModelRepository
-from database_dao.extensions.factory.factory import BaseModelFactory
+from daos.base.database import BaseDBDaoModel, BaseModelRepository
+from daos.base.database.extensions.factory.factory import BaseModelFactory
 
 CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
 
-class Car(BaseModel):
+class Car(BaseDBDaoModel):
     __tablename__ = "cars"
 
     name = Column(String)
