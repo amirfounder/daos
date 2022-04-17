@@ -4,7 +4,7 @@ from sqlalchemy import Column, MetaData
 from sqlalchemy.engine import Engine
 
 from database_dao.model import BaseModel
-from database_dao.repository.sessions import SessionBuilder
+from database_dao.base.sessions import SessionBuilder
 
 
 class SchemaLoader:

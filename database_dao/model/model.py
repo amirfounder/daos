@@ -16,18 +16,18 @@ class BaseModel(AbstractConcreteBase, Base):
         super().__init__()
         self.created_at = datetime.datetime.now(datetime.timezone.utc)
         self.created_at = datetime.datetime.now(datetime.timezone.utc)
-        self.from_dict(kwargs)
+        self.from_keywords(**kwargs)
 
     @classmethod
     def get_columns(cls) -> Dict[str, Column]:
         return {c.name: c for c in cls.metadata.tables.get(cls.__tablename__).columns}
 
-    def from_dict(self, kwargs):
+    def from_keywords(self, **kwargs):
         for k, v in kwargs.items():
             if k in (columns := self.get_columns()):
                 if columns.get(k).primary_key:
                     raise Exception('Cannot assign primary key.')
                 setattr(self, k, v)
 
-    def to_dict(self):
+    def dict(self):
         return {n: v for n in self.get_columns() if (v := getattr(self, n, None))}

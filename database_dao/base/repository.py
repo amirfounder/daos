@@ -9,10 +9,10 @@ from sqlalchemy.engine import create_engine
 from database_dao.core import Metadata
 from database_dao.extensions.pagination.pageable import BasePageable
 from database_dao.extensions.pagination.pagedresult import PagedResult
-from database_dao.filtering.filterable import BaseFilterable
+from database_dao.extensions.filtering.filterable import BaseFilterable
 from database_dao.model import BaseModel
-from database_dao.repository.schema_loader import SchemaLoader
-from database_dao.repository.sessions import SessionBuilder
+from database_dao.base.schema_loader import SchemaLoader
+from database_dao.base.sessions import SessionBuilder
 
 
 class BaseModelRepository:
@@ -61,7 +61,7 @@ class BaseModelRepository:
         instance.created_at = now
         instance.updated_at = now
         with self.session_builder.open() as session:
-            pk = session.execute(insert(self.model).values(**instance.to_dict())).inserted_primary_key
+            pk = session.execute(insert(self.model).values(**instance.dict())).inserted_primary_key
             return session.get(self.model, pk)
 
     def create_in_batch(self, instances: List[BaseModel]) -> None:
@@ -70,19 +70,19 @@ class BaseModelRepository:
             instance.created_at = now
             instance.updated_at = now
         with self.session_builder.open() as session:
-            session.execute(insert(self.model).values([instance.to_dict() for instance in instances]))
+            session.execute(insert(self.model).values([instance.dict() for instance in instances]))
 
     def update(self, instance: BaseModel) -> BaseModel:
         instance.updated_at = datetime.now(timezone.utc)
         with self.session_builder.open() as session:
-            return session.execute(update(self.model).where(self.model.id == instance.id).values(instance.to_dict()))
+            return session.execute(update(self.model).where(self.model.id == instance.id).values(instance.dict()))
 
     def update_in_batch(self, instances: List[BaseModel]) -> None:
         for instance in instances:
             instance.updated_at = datetime.now(timezone.utc)
         with self.session_builder.open() as session:
             for instance in instances:
-                session.execute(update(self.model).where(self.model.id == instance.id).values(instance.to_dict()))
+                session.execute(update(self.model).where(self.model.id == instance.id).values(instance.dict()))
 
     def delete(self, _id: int) -> None:
         with self.session_builder.open() as session:

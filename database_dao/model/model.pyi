@@ -18,14 +18,14 @@ class BaseModel:
 
     def __init__(self, **kwargs): ...
 
-    def to_dict(self) -> Dict[str, Any]:
+    def dict(self) -> Dict[str, Any]:
         """
         Returns the dictionary representation of the object
         :return:
         """
         ...
 
-    def from_dict(self):
+    def from_keywords(self, **kwargs):
         pass
 
     @classmethod

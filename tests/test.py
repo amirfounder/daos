@@ -45,7 +45,7 @@ def test_puts():
     car_repository.update(new_car)
     updated_car = car_repository.get_by_id(1)
 
-    for k, v in updated_car.to_dict().items():
+    for k, v in updated_car.dict().items():
         assert getattr(new_car, k) == v
 
 

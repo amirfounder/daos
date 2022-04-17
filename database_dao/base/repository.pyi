@@ -3,11 +3,11 @@ from typing import Callable, Optional, List, Any, Type
 from sqlalchemy.engine import Engine
 
 from database_dao.model.model import BaseModel
-from database_dao.filtering import BaseFilterable
+from database_dao.extensions.filtering import BaseFilterable
 from database_dao.extensions.pagination import BasePageable, PagedResult
 from database_dao.core import Metadata
-from database_dao.repository.sessions import SessionBuilder
-from database_dao.repository.schema_loader import SchemaLoader
+from database_dao.base.sessions import SessionBuilder
+from database_dao.base.schema_loader import SchemaLoader
 
 
 def session_wrapper(func: Callable):
@@ -26,12 +26,12 @@ class BaseModelRepository:
     session_builder: SessionBuilder
     schema_loader: SchemaLoader
     """
-    Base repository containing default CRUD methods
+    Base base containing default CRUD methods
     """
 
     def __init__(self, connection_string: str, model: Type[BaseModel], metadata: Optional[Metadata] = Metadata):
         """
-        Initializes the repository
+        Initializes the base
         :param connection_string: The connection string (i.e. postgresql://postgres:root@localhost:5432/postgres)
         """
         ...
