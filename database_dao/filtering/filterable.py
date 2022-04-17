@@ -2,7 +2,7 @@ from typing import Dict, Any
 
 from sqlalchemy import func
 
-from pgsql_repository.model.model import BaseModel
+from database_dao.model.model import BaseModel
 
 
 class BaseFilterable:

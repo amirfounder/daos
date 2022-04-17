@@ -2,7 +2,7 @@ import string
 import random
 from datetime import datetime, timezone
 
-from pgsql_repository.extensions.factory.generators.base import RandomGenerator
+from database_dao.extensions.factory.generators.base import RandomGenerator
 
 
 class RandomStrGenerator(RandomGenerator):

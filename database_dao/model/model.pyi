@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Callable
 
 from sqlalchemy import Column, BigInteger
 
-from pgsql_repository.core import Metadata
+from database_dao.core import Metadata
 
 
 class BaseModel:

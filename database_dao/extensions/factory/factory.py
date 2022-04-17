@@ -3,15 +3,15 @@ from typing import Dict, Type, List
 
 from sqlalchemy import Column
 
-from pgsql_repository.core import Metadata
-from pgsql_repository.extensions.factory.generators.types import (
+from database_dao.core import Metadata
+from database_dao.extensions.factory.generators.types import (
     RandomGenerator,
     RandomDatetimeGenerator,
     RandomFloatGenerator,
     RandomIntGenerator,
     RandomStrGenerator
 )
-from pgsql_repository.model.model import BaseModel
+from database_dao.model.model import BaseModel
 
 
 class BaseModelFactory:

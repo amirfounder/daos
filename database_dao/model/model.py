@@ -4,7 +4,7 @@ from typing import Dict
 from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 
-from pgsql_repository.core import Base
+from database_dao.core import Base
 
 
 class BaseModel(AbstractConcreteBase, Base):

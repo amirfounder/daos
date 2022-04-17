@@ -1,4 +1,4 @@
-from pgsql_repository.extensions.pagination.sortable import Sortable, SortDirection
+from database_dao.extensions.pagination.sortable import Sortable, SortDirection
 
 
 class BasePageable:

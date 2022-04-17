@@ -2,12 +2,12 @@ from typing import Callable, Optional, List, Any, Type
 
 from sqlalchemy.engine import Engine
 
-from pgsql_repository.model.model import BaseModel
-from pgsql_repository.filtering import BaseFilterable
-from pgsql_repository.extensions.pagination import BasePageable, PagedResult
-from pgsql_repository.core import Metadata
-from pgsql_repository.repository.sessions import SessionBuilder
-from pgsql_repository.repository.schema_loader import SchemaLoader
+from database_dao.model.model import BaseModel
+from database_dao.filtering import BaseFilterable
+from database_dao.extensions.pagination import BasePageable, PagedResult
+from database_dao.core import Metadata
+from database_dao.repository.sessions import SessionBuilder
+from database_dao.repository.schema_loader import SchemaLoader
 
 
 def session_wrapper(func: Callable):

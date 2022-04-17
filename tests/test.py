@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, select
 
-from pgsql_repository import BaseModel, BaseModelRepository
-from pgsql_repository.extensions.factory.factory import BaseModelFactory
+from database_dao import BaseModel, BaseModelRepository
+from database_dao.extensions.factory.factory import BaseModelFactory
 
 CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 

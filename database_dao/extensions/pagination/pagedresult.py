@@ -1,6 +1,6 @@
 from typing import TypeVar, Generic, List
 
-from pgsql_repository.extensions.pagination.pageable import BasePageable
+from database_dao.extensions.pagination.pageable import BasePageable
 
 T = TypeVar('T')
 

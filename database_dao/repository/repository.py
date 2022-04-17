@@ -6,13 +6,13 @@ from typing import List, Optional, Type
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.engine import create_engine
 
-from pgsql_repository.core import Metadata
-from pgsql_repository.extensions.pagination.pageable import BasePageable
-from pgsql_repository.extensions.pagination.pagedresult import PagedResult
-from pgsql_repository.filtering.filterable import BaseFilterable
-from pgsql_repository.model import BaseModel
-from pgsql_repository.repository.schema_loader import SchemaLoader
-from pgsql_repository.repository.sessions import SessionBuilder
+from database_dao.core import Metadata
+from database_dao.extensions.pagination.pageable import BasePageable
+from database_dao.extensions.pagination.pagedresult import PagedResult
+from database_dao.filtering.filterable import BaseFilterable
+from database_dao.model import BaseModel
+from database_dao.repository.schema_loader import SchemaLoader
+from database_dao.repository.sessions import SessionBuilder
 
 
 class BaseModelRepository:
