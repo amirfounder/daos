@@ -1,30 +1,29 @@
 from abc import ABC, abstractmethod
-from typing import Type, Dict
+from typing import Type, Any, List
 
 from daos.base.abstract.model import BaseModel
 
 
 class BaseDao(ABC):
-    def __init__(self, model: Type[BaseModel], permissions: Dict[str, bool]):
+    def __init__(self, model: Type[Type[BaseModel]]):
         self.model = model
-        self.permissions = permissions
 
     @abstractmethod
-    def get_all(self):
+    def get_all(self) -> List[BaseModel]:
         pass
 
     @abstractmethod
-    def get_by_id(self, _id: int | str):
+    def get_by_id(self, _id: int | str) -> BaseModel | None:
         pass
 
     @abstractmethod
-    def create(self, entity: BaseModel):
+    def create(self, data: Any) -> BaseModel:
         pass
 
     @abstractmethod
-    def update(self, entity: BaseModel):
+    def update(self, data: Any) -> BaseModel:
         pass
 
     @abstractmethod
-    def delete(self, _id: int | str):
+    def delete(self, _id: int | str) -> None:
         pass

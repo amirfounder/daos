@@ -4,7 +4,7 @@ from typing import Dict
 from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 
-from daos.base.database.core import Base
+from daos.base.database.utils import Base
 
 
 class BaseDBDaoModel(AbstractConcreteBase, Base):

@@ -6,7 +6,7 @@ from typing import List, Optional, Type
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.engine import create_engine
 
-from daos.base.database.core import Metadata
+from daos.base.database.utils import Metadata
 from daos.base.database.extensions.pagination.pageable import BasePageable
 from daos.base.database.extensions.pagination.pagedresult import PagedResult
 from daos.base.database.extensions.filtering import BaseFilterable
