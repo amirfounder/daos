@@ -1,4 +1,3 @@
-import os
 from abc import ABC
 from typing import Any
 
@@ -6,18 +5,13 @@ from daos.base.base.model import BaseModel
 
 
 class BaseDocumentModel(BaseModel, ABC):
-    def __init__(self, path: str, contents: Any = None):
-        self.path = path
+    def __init__(self, contents: Any = None, path: str = None):
         self.contents = contents
+        self.path = path
 
     def read(self, mode: str = 'r') -> str:
         with open(self.path, mode) as f:
-            self.contents = f.read()
-        return self.contents
+            return f.read()
 
-    def write(self, mode: str = 'w') -> None:
-        with open(self.path, mode) as f:
-            f.write(self.contents)
-
-    def delete(self):
-        os.remove(self.path)
+    def load_contents(self):
+        self.contents = self.read()

@@ -56,7 +56,7 @@ class BaseDatabaseDao:
                 raise Exception(f'Column not found : {self.model} - {column_name}.')
             return session.execute(select(getattr(self.model, column_name)).distinct().scalars().all())
 
-    def create(self, instance: BaseDatabaseModel) -> BaseDatabaseModel:
+    def save(self, instance: BaseDatabaseModel) -> BaseDatabaseModel:
         now = datetime.now(timezone.utc)
         instance.created_at = now
         instance.updated_at = now
@@ -64,7 +64,7 @@ class BaseDatabaseDao:
             pk = session.execute(insert(self.model).values(**instance.dict())).inserted_primary_key
             return session.get(self.model, pk)
 
-    def create_in_batch(self, instances: List[BaseDatabaseModel]) -> None:
+    def save_in_batch(self, instances: List[BaseDatabaseModel]) -> None:
         for instance in instances:
             now = datetime.now(timezone.utc)
             instance.created_at = now

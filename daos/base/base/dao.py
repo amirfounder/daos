@@ -17,7 +17,7 @@ class BaseDao(ABC):
         pass
 
     @abstractmethod
-    def create(self, data: Any) -> BaseModel:
+    def save(self, data: Any) -> BaseModel:
         pass
 
     @abstractmethod

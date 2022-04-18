@@ -1,7 +1,8 @@
+import os
 from abc import ABC
 from os import listdir
 from os.path import isfile
-from typing import List, Type, Any
+from typing import List, Type
 from ntpath import basename
 
 from daos.base.base.dao import BaseDao
@@ -14,33 +15,49 @@ class BaseDocumentDao(BaseDao, ABC):
         super().__init__(model)
         self.path = path
         self.file_format = file_format
+        if not os.path.exists(path):
+            os.makedirs(path)
+        if not os.path.isdir(path):
+            raise Exception(f'Path is not a directory : {path}')
 
     def _list_file_paths(self):
-        return [p for p in listdir(self.path) if isfile(p)]
+        return [path for path in listdir(self.path) if isfile(path)]
 
     def _next_document_id(self) -> int:
         return len(self._list_file_paths()) + 1
 
     def _next_document_path(self) -> str:
-        return f'{self._next_document_id()}{self.file_format.value}'
+        return f'{self.path}/{self._next_document_id()}{self.file_format.value}'
 
     def get_all(self) -> List[BaseDocumentModel]:
-        return [self.model(f) for f in self._list_file_paths()]
+        models = [self.model(path=path) for path in self._list_file_paths()]
+        for model in models:
+            model.load_contents()
+        return models
 
     def get_by_id(self, _id: int | str) -> BaseDocumentModel | None:
-        p = next(iter([p for p in self._list_file_paths() if basename(p) == _id]))
-        return self.model(p) if p else None
+        path = next(iter([path for path in self._list_file_paths() if basename(path) == _id]))
+        if not path:
+            return
+        instance = self.model(path=path)
+        instance.load_contents()
+        return instance
 
-    def create(self, contents: Any) -> BaseDocumentModel:
-        entity = self.model(f'{self.path}/{self._next_document_path()}', contents)
-        entity.write()
-        return entity
+    def save(self, instance: BaseDocumentModel) -> BaseDocumentModel:
+        if not instance.path:
+            instance.path = self._next_document_path()
+        if not instance.path.startswith(self.path):
+            raise Exception(f'Cannot create model outside dao path : Expected : {self.path}... Got : {instance.path}')
+        with open(instance.path, 'w') as file:
+            file.write(instance.contents)
+        return instance
 
-    def update(self, entity: BaseDocumentModel) -> BaseDocumentModel:
-        entity.write()
-        return entity
+    def update(self, instance: BaseDocumentModel) -> BaseDocumentModel:
+        with open(instance.path, 'w') as file:
+            file.write(instance.contents)
+        return instance
 
     def delete(self, _id: int | str) -> None:
-        entity = self.get_by_id(_id)
-        if entity:
-            entity.delete()
+        instance = self.get_by_id(_id)
+        if instance:
+            os.remove(instance.path)
