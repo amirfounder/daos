@@ -1,13 +1,18 @@
 import datetime
 from typing import Dict
 
-from sqlalchemy import Integer, Column, DateTime
+from sqlalchemy import Integer, Column, DateTime, MetaData
+
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 
+from daos.base.base import BaseModel
 from daos.base.database.utils import Base
 
 
-class BaseDatabaseModel(AbstractConcreteBase, Base):
+class BaseDatabaseModel(AbstractConcreteBase, Base, BaseModel):
+    __tablename__: str
+    metadata: MetaData
+
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)
     updated_at = Column(DateTime(True), default=datetime.datetime.utcnow)
