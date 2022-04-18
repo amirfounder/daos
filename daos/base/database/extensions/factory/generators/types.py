@@ -2,7 +2,7 @@ import string
 import random
 from datetime import datetime, timezone
 
-from daos.base.database import RandomGenerator
+from daos.base.database.extensions.factory.generators.base import RandomGenerator
 
 
 class RandomStrGenerator(RandomGenerator):

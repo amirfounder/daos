@@ -1,8 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Any, TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from daos.base.database.extensions.factory.factory import BaseModelFactory
+from typing import Any
 
 
 class RandomGenerator(ABC):

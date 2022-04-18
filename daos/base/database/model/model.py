@@ -9,10 +9,7 @@ from daos.base.base import BaseModel
 from daos.base.database.utils import Base
 
 
-class BaseDatabaseModel(AbstractConcreteBase, Base, BaseModel):
-    __tablename__: str
-    metadata: MetaData
-
+class BaseDatabaseModel(AbstractConcreteBase):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)
     updated_at = Column(DateTime(True), default=datetime.datetime.utcnow)
