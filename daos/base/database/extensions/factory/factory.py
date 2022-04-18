@@ -11,7 +11,7 @@ from daos.base.database.extensions.factory.generators.types import (
     RandomIntGenerator,
     RandomStrGenerator
 )
-from daos.base.database.model.model import BaseDBDaoModel
+from daos.base.database.model.model import BaseDatabaseModel
 
 
 class BaseModelFactory:
@@ -23,7 +23,7 @@ class BaseModelFactory:
         datetime: RandomDatetimeGenerator()
     }
     
-    def __init__(self, model: Type[BaseDBDaoModel], metadata: Metadata = Metadata,):
+    def __init__(self, model: Type[BaseDatabaseModel], metadata: Metadata = Metadata,):
         self.model = model
         self.metadata = metadata
         self.current_build = {}
@@ -34,10 +34,10 @@ class BaseModelFactory:
 
         self.generator_map[key] = generator
 
-    def create_many(self, count: int) -> List[BaseDBDaoModel]:
+    def create_many(self, count: int) -> List[BaseDatabaseModel]:
         return [self.create() for _ in range(count)]
 
-    def create(self) -> BaseDBDaoModel:
+    def create(self) -> BaseDatabaseModel:
         for c in self.model.get_columns().values():
             if not c.primary_key:
                 key = c if c in self.generator_map else c.type.python_type

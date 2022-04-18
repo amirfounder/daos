@@ -3,14 +3,14 @@ from typing import List, Type
 from sqlalchemy import Column, MetaData
 from sqlalchemy.engine import Engine
 
-from daos.base.database.model import BaseDBDaoModel
+from daos.base.database.model import BaseDatabaseModel
 from daos.base.database.dao.sessions import SessionBuilder
 
 
 class SchemaLoader:
     def __init__(
             self,
-            model: Type[BaseDBDaoModel],
+            model: Type[BaseDatabaseModel],
             metadata: MetaData,
             session_builder: SessionBuilder
     ):

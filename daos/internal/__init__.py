@@ -1,1 +1,1 @@
-from .html_markup import *
+from .news_article import *

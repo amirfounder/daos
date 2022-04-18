@@ -10,7 +10,7 @@ from daos.base.document.utils import FileFormat
 
 
 class BaseDocumentDao(BaseDao, ABC):
-    def __init__(self, model: Type[Type[BaseDocumentModel]], path: str, file_format: FileFormat):
+    def __init__(self, model: Type, path: str, file_format: FileFormat):
         super().__init__(model)
         self.path = path
         self.file_format = file_format

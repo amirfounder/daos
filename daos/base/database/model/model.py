@@ -7,7 +7,7 @@ from sqlalchemy.ext.declarative import AbstractConcreteBase
 from daos.base.database.utils import Base
 
 
-class BaseDBDaoModel(AbstractConcreteBase, Base):
+class BaseDatabaseModel(AbstractConcreteBase, Base):
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)
     updated_at = Column(DateTime(True), default=datetime.datetime.utcnow)

@@ -10,13 +10,13 @@ from daos.base.database.utils import Metadata
 from daos.base.database.extensions.pagination.pageable import BasePageable
 from daos.base.database.extensions.pagination.pagedresult import PagedResult
 from daos.base.database.extensions.filtering import BaseFilterable
-from daos.base.database.model import BaseDBDaoModel
+from daos.base.database.model import BaseDatabaseModel
 from daos.base.database.dao.schema_loader import SchemaLoader
 from daos.base.database.dao.sessions import SessionBuilder
 
 
-class BaseModelRepository:
-    def __init__(self, connection_string: str, model: Type[BaseDBDaoModel], metadata: Optional[Metadata] = Metadata):
+class BaseDatabaseDao:
+    def __init__(self, connection_string: str, model: Type[BaseDatabaseModel], metadata: Optional[Metadata] = Metadata):
         self.model = model
         self.connection_string = connection_string
         self.metadata = metadata
@@ -26,7 +26,7 @@ class BaseModelRepository:
         self.schema_loader = SchemaLoader(self.model, self.metadata, self.session_builder)
         self.schema_loader.load()
 
-    def get_by_id(self, _id: int) -> BaseDBDaoModel:
+    def get_by_id(self, _id: int) -> BaseDatabaseModel:
         with self.session_builder.open() as session:
             return session.get(self.model, _id)
 
@@ -34,7 +34,7 @@ class BaseModelRepository:
         with self.session_builder.open() as session:
             return session.execute(select(self.model).where(self.model.id.in_(ids))).scalars().all()
     
-    def get_all(self, pageable: Optional[BasePageable] = None) -> List[BaseDBDaoModel]:
+    def get_all(self, pageable: Optional[BasePageable] = None) -> List[BaseDatabaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
             if pageable:
@@ -42,7 +42,7 @@ class BaseModelRepository:
             return session.execute(sql_query).scalars().all()
 
     def get_all_by_filterable(self, filterable: BaseFilterable, pageable: Optional[BasePageable] = None)\
-            -> List[BaseDBDaoModel] | PagedResult[BaseDBDaoModel]:
+            -> List[BaseDatabaseModel] | PagedResult[BaseDatabaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
             sql_query = filterable.apply(sql_query)
@@ -56,7 +56,7 @@ class BaseModelRepository:
                 raise Exception(f'Column not found : {self.model} - {column_name}.')
             return session.execute(select(getattr(self.model, column_name)).distinct().scalars().all())
 
-    def create(self, instance: BaseDBDaoModel) -> BaseDBDaoModel:
+    def create(self, instance: BaseDatabaseModel) -> BaseDatabaseModel:
         now = datetime.now(timezone.utc)
         instance.created_at = now
         instance.updated_at = now
@@ -64,7 +64,7 @@ class BaseModelRepository:
             pk = session.execute(insert(self.model).values(**instance.dict())).inserted_primary_key
             return session.get(self.model, pk)
 
-    def create_in_batch(self, instances: List[BaseDBDaoModel]) -> None:
+    def create_in_batch(self, instances: List[BaseDatabaseModel]) -> None:
         for instance in instances:
             now = datetime.now(timezone.utc)
             instance.created_at = now
@@ -72,12 +72,12 @@ class BaseModelRepository:
         with self.session_builder.open() as session:
             session.execute(insert(self.model).values([instance.dict() for instance in instances]))
 
-    def update(self, instance: BaseDBDaoModel) -> BaseDBDaoModel:
+    def update(self, instance: BaseDatabaseModel) -> BaseDatabaseModel:
         instance.updated_at = datetime.now(timezone.utc)
         with self.session_builder.open() as session:
             return session.execute(update(self.model).where(self.model.id == instance.id).values(instance.dict()))
 
-    def update_in_batch(self, instances: List[BaseDBDaoModel]) -> None:
+    def update_in_batch(self, instances: List[BaseDatabaseModel]) -> None:
         for instance in instances:
             instance.updated_at = datetime.now(timezone.utc)
         with self.session_builder.open() as session:

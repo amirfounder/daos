@@ -5,7 +5,7 @@ from daos.base.abstract.model import BaseModel
 
 
 class BaseDao(ABC):
-    def __init__(self, model: Type[Type[BaseModel]]):
+    def __init__(self, model: Type):
         self.model = model
 
     @abstractmethod

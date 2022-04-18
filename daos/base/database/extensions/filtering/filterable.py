@@ -2,11 +2,11 @@ from typing import Dict, Any
 
 from sqlalchemy import func
 
-from daos.base.database.model.model import BaseDBDaoModel
+from daos.base.database.model.model import BaseDatabaseModel
 
 
 class BaseFilterable:
-    def __init__(self, model: BaseDBDaoModel, filters: Dict[str, Any]):
+    def __init__(self, model: BaseDatabaseModel, filters: Dict[str, Any]):
         self.model = model
         self.filters = filters
 

@@ -1,1 +1,1 @@
-from .dao import BaseModelRepository
+from .dao import BaseDatabaseDao
