@@ -7,9 +7,11 @@ from daos.base.document.base import BaseDocumentModel
 
 
 class BaseHtmlDocumentModel(BaseDocumentModel, ABC):
-    def __init__(self, path: str, contents: Optional[str] = None):
-        super().__init__(path, contents)
-        self.soup: BeautifulSoup
+    def __init__(self, contents: Optional[str] = None, path: Optional[str] = None):
+        super().__init__(contents, path)
+        self.soup: Optional[BeautifulSoup] = None
 
     def as_soup(self):
-        return BeautifulSoup(self.contents, 'html.parser')
+        if not self.soup:
+            self.soup = BeautifulSoup(self.contents, 'html.parser')
+        return self.soup

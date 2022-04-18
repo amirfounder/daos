@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any
+from typing import Any, Optional
 
 from ntpath import basename
 
@@ -7,14 +7,16 @@ from daos.base.base.model import BaseModel
 
 
 class BaseDocumentModel(BaseModel, ABC):
-    def __init__(self, contents: Any = None, path: str = None):
+    def __init__(self, contents: Optional[Any] = None, path: Optional[str] = None):
         self.contents = contents
         self.path = path
-        self.id = basename(self.path)
+        self.id = basename(path)
+
+    def set_path(self, path: str):
+        self.path = path
+        self.id = basename(path)
 
     def read(self, mode: str = 'r') -> str:
         with open(self.path, mode) as f:
-            return f.read()
-
-    def load_contents(self):
-        self.contents = self.read()
+            self.contents = f.read()
+            return self.contents
