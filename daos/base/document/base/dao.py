@@ -4,8 +4,8 @@ from os.path import isfile
 from typing import List, Type, Any
 from ntpath import basename
 
-from daos.base.abstract.dao import BaseDao
-from daos.base.document.abstract.model import BaseDocumentModel
+from daos.base.base.dao import BaseDao
+from daos.base.document.base.model import BaseDocumentModel
 from daos.base.document.utils import FileFormat
 
 

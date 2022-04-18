@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Type, Any, List
 
-from daos.base.abstract.model import BaseModel
+from daos.base.base.model import BaseModel
 
 
 class BaseDao(ABC):

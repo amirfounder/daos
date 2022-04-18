@@ -2,7 +2,7 @@ import os
 from abc import ABC
 from typing import Any
 
-from daos.base.abstract.model import BaseModel
+from daos.base.base.model import BaseModel
 
 
 class BaseDocumentModel(BaseModel, ABC):

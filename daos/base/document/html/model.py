@@ -3,7 +3,7 @@ from typing import Optional
 
 from bs4 import BeautifulSoup
 
-from daos.base.document.abstract import BaseDocumentModel
+from daos.base.document.base import BaseDocumentModel
 
 
 class BaseHtmlDocumentModel(BaseDocumentModel, ABC):
