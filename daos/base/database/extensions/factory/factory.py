@@ -4,7 +4,7 @@ from typing import Dict, Type, List
 from sqlalchemy import Column
 
 from daos.base.database.utils import MetaData
-from daos.base.database.extensions.factory.generators.types import (
+from daos.base.database.extensions.factory.generators import (
     RandomGenerator,
     RandomDatetimeGenerator,
     RandomFloatGenerator,
