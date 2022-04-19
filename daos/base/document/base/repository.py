@@ -3,7 +3,7 @@ from abc import ABC
 from os import listdir
 from os.path import isfile
 from pathlib import Path
-from typing import List, Type, TypeVar, Generic
+from typing import List, Type, TypeVar, Generic, Optional
 from ntpath import basename
 
 from daos.base.base.repository import BaseRepository
@@ -33,8 +33,8 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
     def _next_document_id(self) -> int:
         return len(self._list_file_paths()) + 1
 
-    def _next_document_path(self) -> str:
-        return f'{self.path}/{self._next_document_id()}{self.file_format.value}'
+    def _next_document_path(self, _id: Optional[int | str] = None) -> str:
+        return f'{self.path}/{_id or self._next_document_id()}{self.file_format.value}'
 
     def get_all(self) -> List[T]:
         models = []
@@ -67,7 +67,7 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
         if instance.get_path():
             raise Exception(f'Instance already has path. Update instead.')
 
-        path = f'{self.path}/{_id}' if (_id := instance.get_id()) else self._next_document_path()
+        path = self._next_document_path(instance.get_id())
         instance.set_path(path)
 
         with open(instance.get_path(), 'w', encoding='utf-8') as file:
