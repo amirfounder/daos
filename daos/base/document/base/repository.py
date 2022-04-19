@@ -2,6 +2,7 @@ import os
 from abc import ABC
 from os import listdir
 from os.path import isfile
+from pathlib import Path
 from typing import List, Type
 from ntpath import basename
 
@@ -55,6 +56,10 @@ class BaseDocumentRepository(BaseRepository, ABC):
         instance.read()
 
         return instance
+
+    def get_by_path(self, path: str) -> BaseDocumentModel | None:
+        _id = Path(path).stem
+        return self.get_by_id(_id)
 
     def save(self, instance: BaseDocumentModel) -> BaseDocumentModel:
         if instance.get_path():
