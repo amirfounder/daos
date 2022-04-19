@@ -3,7 +3,7 @@ from typing import Dict, Type, List
 
 from sqlalchemy import Column
 
-from daos.base.database.utils import Metadata
+from daos.base.database.utils import MetaData
 from daos.base.database.extensions.factory.generators.types import (
     RandomGenerator,
     RandomDatetimeGenerator,
@@ -23,7 +23,7 @@ class BaseModelFactory:
         datetime: RandomDatetimeGenerator()
     }
     
-    def __init__(self, model: Type[BaseDatabaseModel], metadata: Metadata = Metadata,):
+    def __init__(self, model: Type[BaseDatabaseModel], metadata: MetaData = MetaData,):
         self.model = model
         self.metadata = metadata
         self.current_build = {}

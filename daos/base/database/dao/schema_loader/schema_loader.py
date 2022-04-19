@@ -10,10 +10,12 @@ from daos.base.database.dao.sessions import SessionBuilder
 class SchemaLoader:
     def __init__(
             self,
+            engine: Engine,
             model: Type[BaseDatabaseModel],
             metadata: MetaData,
             session_builder: SessionBuilder
     ):
+        self.engine = engine
         self.model = model
         self.metadata = metadata
         self.session_builder = session_builder
@@ -42,6 +44,7 @@ class SchemaLoader:
             session.execute(alter_table_statement)
 
     def load(self):
+        self.metadata.create_all(bind=self.engine)
         for table in self.metadata.tables:
             model_columns_map = self.model.get_columns()
             model_columns = [k for k in model_columns_map]

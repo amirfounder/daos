@@ -26,7 +26,7 @@ class BaseDocumentDao(BaseDao, ABC):
             raise Exception(f'Path is not a directory : {path}')
 
     def _list_file_paths(self):
-        return [path for path in listdir(self.path) if isfile(path)]
+        return [path for f in listdir(self.path) if isfile(path := f'{self.path}/{f}')]
 
     def _next_document_id(self) -> int:
         return len(self._list_file_paths()) + 1
@@ -62,13 +62,13 @@ class BaseDocumentDao(BaseDao, ABC):
 
         instance.set_path(self._next_document_path())
 
-        with open(instance.get_path(), 'w') as file:
+        with open(instance.get_path(), 'w', encoding='utf-8') as file:
             file.write(instance.contents)
 
         return instance
 
     def update(self, instance: BaseDocumentModel) -> BaseDocumentModel:
-        with open(instance.get_path(), 'w') as file:
+        with open(instance.get_path(), 'w', encoding='utf-8') as file:
             file.write(instance.contents)
 
         return instance

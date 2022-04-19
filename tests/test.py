@@ -7,7 +7,7 @@ CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
 
 class Car(BaseDatabaseModel):
-    __tablename__ = "cars"
+    __tablename__ = "carsss"
 
     name = Column(String)
     model = Column(String)
@@ -33,8 +33,8 @@ car_repository = CarRepository()
 
 def test_creates():
     cars = car_factory.create_many(25)
-    car_repository.create(cars[0])
-    car_repository.create_in_batch(cars[1:])
+    car_repository.save(cars[0])
+    car_repository.save_in_batch(cars[1:])
 
 
 def test_puts():

@@ -2,15 +2,16 @@ from abc import ABC
 from typing import Any, Optional
 
 from ntpath import basename
+from pathlib import Path
 
 from daos.base.base.model import BaseModel
 
 
 class BaseDocumentModel(BaseModel, ABC):
-    def __init__(self, contents: Optional[Any] = None, path: Optional[str] = None):
+    def __init__(self, contents: Optional[Any] = None):
         self.contents = contents
-        self._path = path
-        self._id = basename(path)
+        self._path: Optional[Path] = None
+        self._id: Optional[int] = None
 
     def get_id(self):
         return self._id
@@ -20,10 +21,13 @@ class BaseDocumentModel(BaseModel, ABC):
 
     def set_path(self, path: str):
         if not self._path:
-            self._path = path
-            self._id = basename(path)
-
-        raise Exception(f'Cannot set path. Path already set : {self._path}')
+            self._path = Path(path)
+            if self._path.stem.isdigit():
+                self._id = self._path.stem
+            else:
+                raise Exception(f'Path stem is not digit : {self._path}')
+        else:
+            raise Exception(f'Cannot set path. Path already set : {self._path}')
 
     def read(self, mode: str = 'r') -> str:
         with open(self._path, mode) as f:

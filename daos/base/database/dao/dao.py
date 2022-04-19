@@ -6,7 +6,7 @@ from typing import List, Optional, Type
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy.engine import create_engine
 
-from daos.base.database.utils import Metadata
+from daos.base.database.utils import MetaData
 from daos.base.database.extensions.pagination.pageable import BasePageable
 from daos.base.database.extensions.pagination.pagedresult import PagedResult
 from daos.base.database.extensions.filtering import BaseFilterable
@@ -16,14 +16,14 @@ from daos.base.database.dao.sessions import SessionBuilder
 
 
 class BaseDatabaseDao:
-    def __init__(self, connection_string: str, model: Type[BaseDatabaseModel], metadata: Optional[Metadata] = Metadata):
+    def __init__(self, connection_string: str, model: Type[BaseDatabaseModel], metadata: Optional[MetaData] = MetaData):
         self.model = model
         self.connection_string = connection_string
         self.metadata = metadata
 
         self.engine = create_engine(self.connection_string, future=True)
         self.session_builder = SessionBuilder(self.engine)
-        self.schema_loader = SchemaLoader(self.model, self.metadata, self.session_builder)
+        self.schema_loader = SchemaLoader(self.engine, self.model, self.metadata, self.session_builder)
         self.schema_loader.load()
 
     def get_by_id(self, _id: int) -> BaseDatabaseModel:
@@ -61,7 +61,7 @@ class BaseDatabaseDao:
         instance.created_at = now
         instance.updated_at = now
         with self.session_builder.open() as session:
-            pk = session.execute(insert(self.model).values(**instance.dict())).inserted_primary_key
+            pk = session.execute(insert(self.model).values(instance.dict())).inserted_primary_key
             return session.get(self.model, pk)
 
     def save_in_batch(self, instances: List[BaseDatabaseModel]) -> None:
