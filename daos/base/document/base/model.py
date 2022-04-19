@@ -33,8 +33,3 @@ class BaseDocumentModel(BaseModel, ABC):
 
     def set_contents(self, contents: Any):
         self._contents = str(contents)
-
-    def read(self, mode: str = 'r') -> str:
-        with open(self._path, mode) as f:
-            self.contents = f.read()
-            return self.contents
