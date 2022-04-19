@@ -27,8 +27,8 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
         if not os.path.isdir(path):
             raise Exception(f'Path is not a directory : {path}')
 
-    def _list_file_paths(self):
-        return [path for f in listdir(self.path) if isfile(path := f'{self.path}/{f}')]
+    def _list_file_paths(self) -> List[Path]:
+        return [Path(path) for f in listdir(self.path) if isfile(path := f'{self.path}/{f}')]
 
     def _next_document_id(self) -> int:
         return len(self._list_file_paths()) + 1
@@ -47,7 +47,7 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
         return models
 
     def get_by_id(self, _id: int | str) -> T | None:
-        path = next(iter([path for path in self._list_file_paths() if basename(path) == _id]))
+        path = next(iter([path for path in self._list_file_paths() if path.stem == _id]))
 
         if not path:
             return
