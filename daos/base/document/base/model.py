@@ -33,3 +33,7 @@ class BaseDocumentModel(BaseModel, ABC):
 
     def set_contents(self, contents: Any):
         self._contents = str(contents)
+
+    def load_contents(self):
+        with open(self._path, 'r', encoding='utf-8') as file:
+            self._contents = file.read()

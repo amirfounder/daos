@@ -42,7 +42,7 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
         for path in self._list_file_paths():
             model = self.model()
             model.set_path(path)
-            model.read()
+            model.load_contents()
 
         return models
 
@@ -54,7 +54,7 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
 
         instance = self.model()
         instance.set_path(path)
-        instance.read()
+        instance.load_contents()
 
         return instance
 
