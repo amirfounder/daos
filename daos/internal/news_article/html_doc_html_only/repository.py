@@ -1,7 +1,7 @@
 from daos.base.document.html.repository import BaseHtmlDocumentRepository as Base
 from daos.internal.paths import Paths
 
-from .model import NewsArticleHtmlDocumentHtmlOnly as Model
+from .model import NewsArticleHtmlDocumentHtmlOnlyModel as Model
 
 PATH = Paths.NEWS_ARTICLE_HTML_ONLY_DIR_PATH.value
 

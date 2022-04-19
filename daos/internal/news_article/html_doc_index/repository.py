@@ -1,7 +1,7 @@
-from daos.base import BaseDatabaseRepository
-from daos.internal.news_article.html_doc_index.model import NewsArticleHtmlDocumentIndexModel
+from daos.base import BaseDatabaseRepository as Base
+from daos.internal.news_article.html_doc_index.model import NewsArticleHtmlDocumentIndexModel as Model
 
 
-class NewsArticleHtmlDocumentIndexRepository(BaseDatabaseRepository):
+class NewsArticleHtmlDocumentIndexRepository(Base):
     def __init__(self):
-        super().__init__('postgresql://postgres:root@localhost:5432/postgres', NewsArticleHtmlDocumentIndexModel)
+        super().__init__('postgresql://postgres:root@localhost:5432/postgres', Model)

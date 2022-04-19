@@ -1,5 +1,5 @@
 from daos.base.document.html.model import BaseHtmlDocumentModel as Base
 
 
-class NewsArticleHtmlDocumentNoJS(Base):
+class NewsArticleHtmlDocumentNoJSModel(Base):
     pass
