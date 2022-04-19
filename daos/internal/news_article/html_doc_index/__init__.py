@@ -1,3 +1,0 @@
-from .model import NewsArticleHtmlDocumentIndexModel
-from .repository import NewsArticleHtmlDocumentIndexRepository
-from .filter import NewsArticleHtmlDocumentIndexFilter

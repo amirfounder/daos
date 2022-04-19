@@ -1,10 +1,9 @@
-from sqlalchemy import Column, BigInteger, DateTime, String, Boolean
+from sqlalchemy import Column, DateTime, BigInteger, String, Boolean
 
 from daos.base import BaseDatabaseModel as Base
 
 
-class NewsArticleHtmlDocumentIndexModel(Base):
-    __tablename__ = 'news_article_html_document_index'
+class BaseNewsArticleHtmlDocumentIndexModel(Base):
 
     retrieved_from_web_at = Column(DateTime(True))
     document_id = Column(BigInteger)
@@ -18,5 +17,4 @@ class NewsArticleHtmlDocumentIndexModel(Base):
     is_html_only_version_stored = Column(Boolean, default=False)
     is_no_js_version_stored = Column(Boolean, default=False)
 
-    source_url = Column(String)
-    search_keywords = Column(String)
+    url = Column(String)

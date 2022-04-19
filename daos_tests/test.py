@@ -16,7 +16,7 @@ class Car(BaseDatabaseModel):
 
 class CarRepository(BaseDatabaseRepository):
     def __init__(self):
-        super().__init__(CONN_STRING, Car)
+        super().__init__(Car)
 
     def get_count(self):
         with self.session_builder.open() as session:

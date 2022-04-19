@@ -15,9 +15,16 @@ from daos.base.database.repository.sessions import SessionBuilder
 
 T = TypeVar('T')
 
+POSTGRESQL_CONNECTION_STRING = 'postgresql://postgres:root@localhost:5432/postgres',
+
 
 class BaseDatabaseRepository(Generic[T]):
-    def __init__(self, connection_string: str, model: Type[T], metadata: Optional[MetaData] = MetaData):
+    def __init__(
+            self,
+            model: Type[T],
+            connection_string: str = POSTGRESQL_CONNECTION_STRING,
+            metadata: Optional[MetaData] = MetaData
+    ):
         self.model = model
         self.connection_string = connection_string
         self.metadata = metadata

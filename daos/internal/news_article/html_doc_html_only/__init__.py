@@ -1,2 +1,0 @@
-from .model import NewsArticleHtmlDocumentHtmlOnlyModel
-from .repository import NewsArticleHtmlDocumentHtmlOnlyRepository

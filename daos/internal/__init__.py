@@ -1,1 +1,1 @@
-from .news_article import *
+from .html_doc import *

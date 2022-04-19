@@ -1,2 +1,0 @@
-from .repository import NewsArticleHtmlDocumentNoJsRepository
-from .model import NewsArticleHtmlDocumentNoJSModel
