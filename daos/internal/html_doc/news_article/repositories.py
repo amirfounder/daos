@@ -1,32 +1,39 @@
 from daos.base.document.html.repository import BaseHtmlDocumentRepository as Base
+from daos.base.database.repository import BaseDatabaseRepository
 from daos.internal.paths import Paths
 
 from .models import (
-    NewsArticleHtmlDocumentNoJSModel,
-    NewsArticleHtmlDocumentHtmlOnlyModel,
-    NewsArticleHtmlDocumentRawModel
+    NewsArticleHtmlDocumentNoJSModel as NoJsModel,
+    NewsArticleHtmlDocumentHtmlOnlyModel as HtmlOnlyModel,
+    NewsArticleHtmlDocumentRawModel as RawModel,
+    NewsArticleHtmlDocumentIndexModel as IndexModel
 )
 
 
-class NewsArticleHtmlDocumentNoJsRepository(Base[NewsArticleHtmlDocumentNoJSModel]):
+class NewsArticleHtmlDocumentNoJsRepository(Base[NoJsModel]):
     def __init__(self):
         super().__init__(
-            model=NewsArticleHtmlDocumentNoJSModel,
+            model=NoJsModel,
             path=Paths.NEWS_ARTICLE_NO_JS_DIR_PATH.value
         )
 
 
-class NewsArticleHtmlDocumentHtmlOnlyRepository(Base[NewsArticleHtmlDocumentHtmlOnlyModel]):
+class NewsArticleHtmlDocumentHtmlOnlyRepository(Base[HtmlOnlyModel]):
     def __init__(self):
         super().__init__(
-            model=NewsArticleHtmlDocumentHtmlOnlyModel,
+            model=HtmlOnlyModel,
             path=Paths.NEWS_ARTICLE_HTML_ONLY_DIR_PATH.value
         )
 
 
-class NewsArticleHtmlDocumentRawRepository(Base[NewsArticleHtmlDocumentRawModel]):
+class NewsArticleHtmlDocumentRawRepository(Base[RawModel]):
     def __init__(self):
         super().__init__(
-            model=NewsArticleHtmlDocumentRawModel,
+            model=RawModel,
             path=Paths.NEWS_ARTICLE_RAW_DIR_PATH.value
         )
+
+
+class NewsArticleHtmlDocumentIndexRepository(BaseDatabaseRepository[IndexModel]):
+    def __init__(self):
+        super().__init__(IndexModel)

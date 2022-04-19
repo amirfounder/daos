@@ -3,7 +3,7 @@ from sqlalchemy import Column, DateTime, BigInteger, String, Boolean
 from daos.base import BaseDatabaseModel as Base
 
 
-class BaseNewsArticleHtmlDocumentIndexModel(Base):
+class BaseHtmlDocumentIndexModel(Base):
 
     retrieved_from_web_at = Column(DateTime(True))
     document_id = Column(BigInteger)

@@ -1,12 +1,12 @@
-from typing import Dict, Any, Type
+from typing import Dict, Any, Type, TypeVar, Generic
 
 from sqlalchemy import func, Column
 
-from daos.base.database.model.model import BaseDatabaseModel
+T = TypeVar('T')
 
 
-class BaseFilter:
-    def __init__(self, model: Type[BaseDatabaseModel], params: Dict):
+class BaseFilter(Generic[T]):
+    def __init__(self, model: Type[T], params: Dict):
         self.model = model
         self.params = params
 
