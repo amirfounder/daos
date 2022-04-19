@@ -41,7 +41,7 @@ class BaseDatabaseRepository:
                 sql_query = pageable.apply(sql_query)
             return session.execute(sql_query).scalars().all()
 
-    def get_all_by_filterable(self, filterable: BaseFilterable, pageable: Optional[BasePageable] = None)\
+    def get_all_with_filters(self, filterable: BaseFilterable, pageable: Optional[BasePageable] = None)\
             -> List[BaseDatabaseModel] | PagedResult[BaseDatabaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
