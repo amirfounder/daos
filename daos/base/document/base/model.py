@@ -8,7 +8,7 @@ from daos.base.base.model import BaseModel
 
 class BaseDocumentModel(BaseModel, ABC):
     def __init__(self, contents: Optional[Any] = None):
-        self.contents = contents
+        self._contents = str(contents)
         self._path: Optional[Path] = None
         self._id: Optional[int] = None
 
@@ -27,6 +27,12 @@ class BaseDocumentModel(BaseModel, ABC):
                 raise Exception(f'Path stem is not digit : {self._path}')
         else:
             raise Exception(f'Cannot set path. Path already set : {self._path}')
+
+    def get_contents(self):
+        return self._contents
+
+    def set_contents(self, contents: Any):
+        self._contents = str(contents)
 
     def read(self, mode: str = 'r') -> str:
         with open(self._path, mode) as f:
