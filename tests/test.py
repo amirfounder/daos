@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, select
 
-from daos.base.database import BaseDatabaseModel, BaseDatabaseDao
+from daos.base.database import BaseDatabaseModel, BaseDatabaseRepository
 from daos.base.database.extensions.factory.factory import BaseModelFactory
 
 CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
@@ -14,7 +14,7 @@ class Car(BaseDatabaseModel):
     make = Column(String)
 
 
-class CarRepository(BaseDatabaseDao):
+class CarRepository(BaseDatabaseRepository):
     def __init__(self):
         super().__init__(CONN_STRING, Car)
 

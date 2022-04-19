@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import Type, Any, List
 
-from daos.base.base.model import BaseModel
+from daos.base.base.model import BaseModel as Base
 
 
-class BaseDao(ABC):
-    def __init__(self, model: Type[Type[BaseModel]]):
+class BaseRepository(ABC):
+    def __init__(self, model: Type[Type[Base]]):
         self.model = model
 
     @abstractmethod

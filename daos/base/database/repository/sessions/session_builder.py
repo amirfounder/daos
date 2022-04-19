@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 
-from daos.base.database.dao.sessions.session_context import SessionContext
+from daos.base.database.repository.sessions.session_context import SessionContext
 
 
 class SessionBuilder:

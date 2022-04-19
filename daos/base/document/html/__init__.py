@@ -1,2 +1,2 @@
-from .dao import BaseHtmlDocumentDao
+from .repository import BaseHtmlDocumentRepository
 from .model import BaseHtmlDocumentModel

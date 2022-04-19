@@ -1,4 +1,4 @@
-from daos.base.document.html.dao import BaseHtmlDocumentDao as Base
+from daos.base.document.html.repository import BaseHtmlDocumentRepository as Base
 from daos.internal.paths import Paths
 
 from .model import NewsArticleHtmlDocumentNoJS as Model

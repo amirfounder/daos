@@ -2,10 +2,10 @@ import string
 import random
 from datetime import datetime, timezone
 
-from daos.base.database.extensions.factory.generators.base import RandomGenerator
+from daos.base.database.extensions.factory.generators.base import RandomGenerator as Base
 
 
-class RandomStrGenerator(RandomGenerator):
+class RandomStrGenerator(Base):
     def __init__(
             self,
             include_upper: bool = True,
@@ -30,7 +30,7 @@ class RandomStrGenerator(RandomGenerator):
         return ''.join([self.pool[random.randint(0, len(self.pool) - 1)] for _ in range(self.length)])
 
 
-class RandomIntGenerator(RandomGenerator):
+class RandomIntGenerator(Base):
     def __init__(self, _min: int = 0, _max: int = 1000):
         self.min = _min
         self.max = _max
@@ -39,7 +39,7 @@ class RandomIntGenerator(RandomGenerator):
         return random.randint(self.min, self.max)
 
 
-class RandomFloatGenerator(RandomGenerator):
+class RandomFloatGenerator(Base):
     def __init__(self, _min: bool = 0, _max: bool = 1000, decimals: int = 2):
         self.min = _max
         self.max = _min
@@ -49,7 +49,7 @@ class RandomFloatGenerator(RandomGenerator):
         return round(random.uniform(self.min, self.max), self.decimals)
 
 
-class RandomDatetimeGenerator(RandomGenerator):
+class RandomDatetimeGenerator(Base):
     def __init__(
             self,
             start: datetime = datetime(1995, 1, 1, tzinfo=timezone.utc),

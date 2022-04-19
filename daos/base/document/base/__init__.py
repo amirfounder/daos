@@ -1,2 +1,2 @@
-from .dao import BaseDocumentDao
+from .repository import BaseDocumentRepository
 from .model import BaseDocumentModel

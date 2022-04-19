@@ -5,12 +5,12 @@ from os.path import isfile
 from typing import List, Type
 from ntpath import basename
 
-from daos.base.base.dao import BaseDao
+from daos.base.base.repository import BaseRepository
 from daos.base.document.base.model import BaseDocumentModel
 from daos.base.document.utils import FileFormat
 
 
-class BaseDocumentDao(BaseDao, ABC):
+class BaseDocumentRepository(BaseRepository, ABC):
     """
     TODO: Create a memory cache of file object ids to make sure we don't accidentally mis-create document objects.
     """
@@ -67,6 +67,7 @@ class BaseDocumentDao(BaseDao, ABC):
 
         return instance
 
+    # noinspection PyMethodMayBeStatic
     def update(self, instance: BaseDocumentModel) -> BaseDocumentModel:
         with open(instance.get_path(), 'w', encoding='utf-8') as file:
             file.write(instance.contents)

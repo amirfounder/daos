@@ -11,11 +11,11 @@ from daos.base.database.extensions.pagination.pageable import BasePageable
 from daos.base.database.extensions.pagination.pagedresult import PagedResult
 from daos.base.database.extensions.filtering import BaseFilterable
 from daos.base.database.model import BaseDatabaseModel
-from daos.base.database.dao.schema_loader import SchemaLoader
-from daos.base.database.dao.sessions import SessionBuilder
+from daos.base.database.repository.schema_loader import SchemaLoader
+from daos.base.database.repository.sessions import SessionBuilder
 
 
-class BaseDatabaseDao:
+class BaseDatabaseRepository:
     def __init__(self, connection_string: str, model: Type[BaseDatabaseModel], metadata: Optional[MetaData] = MetaData):
         self.model = model
         self.connection_string = connection_string

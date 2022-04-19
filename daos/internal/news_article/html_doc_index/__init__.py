@@ -1,2 +1,2 @@
-from .dao import NewsArticleHtmlDocumentIndexDao
+from .repository import NewsArticleHtmlDocumentIndexRepository
 from .model import NewsArticleHtmlDocumentIndexModel

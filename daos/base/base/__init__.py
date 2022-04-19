@@ -1,2 +1,2 @@
-from .dao import BaseDao
+from .repository import BaseRepository
 from .model import BaseModel
