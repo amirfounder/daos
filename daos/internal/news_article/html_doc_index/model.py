@@ -1,4 +1,4 @@
-from sqlalchemy import Column, BigInteger, DateTime, String
+from sqlalchemy import Column, BigInteger, DateTime, String, Boolean
 
 from daos.base import BaseDatabaseModel as Base
 
@@ -14,9 +14,9 @@ class NewsArticleHtmlDocumentIndexModel(Base):
     html_only_version_document_path = Column(String)
     no_js_version_document_path = Column(String)
 
-    is_raw_version_stored = Column(String, default=False)
-    is_html_only_version_stored = Column(String, default=False)
-    is_no_js_version_stored = Column(String, default=False)
+    is_raw_version_stored = Column(Boolean, default=False)
+    is_html_only_version_stored = Column(Boolean, default=False)
+    is_no_js_version_stored = Column(Boolean, default=False)
 
     source_url = Column(String)
     search_keywords = Column(String)
