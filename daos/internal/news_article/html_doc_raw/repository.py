@@ -6,6 +6,6 @@ from .model import NewsArticleHtmlDocumentRawModel as Model
 PATH = Paths.NEWS_ARTICLE_RAW_DIR_PATH.value
 
 
-class NewsArticleHtmlDocumentRawRepository(Base):
+class NewsArticleHtmlDocumentRawRepository(Base[Model]):
     def __init__(self):
         super().__init__(Model, PATH)

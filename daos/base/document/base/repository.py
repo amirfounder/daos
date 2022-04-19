@@ -3,19 +3,20 @@ from abc import ABC
 from os import listdir
 from os.path import isfile
 from pathlib import Path
-from typing import List, Type
+from typing import List, Type, TypeVar, Generic
 from ntpath import basename
 
 from daos.base.base.repository import BaseRepository
-from daos.base.document.base.model import BaseDocumentModel
 from daos.base.document.utils import FileFormat
 
+T = TypeVar('T')
 
-class BaseDocumentRepository(BaseRepository, ABC):
+
+class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
     """
     TODO: Create a memory cache of file object ids to make sure we don't accidentally mis-create document objects.
     """
-    def __init__(self, model: Type[BaseDocumentModel], path: str, file_format: FileFormat):
+    def __init__(self, model: Type[T], path: str, file_format: FileFormat):
         super().__init__(model)
         self.path = path
         self.file_format = file_format
@@ -35,7 +36,7 @@ class BaseDocumentRepository(BaseRepository, ABC):
     def _next_document_path(self) -> str:
         return f'{self.path}/{self._next_document_id()}{self.file_format.value}'
 
-    def get_all(self) -> List[BaseDocumentModel]:
+    def get_all(self) -> List[T]:
         models = []
 
         for path in self._list_file_paths():
@@ -45,7 +46,7 @@ class BaseDocumentRepository(BaseRepository, ABC):
 
         return models
 
-    def get_by_id(self, _id: int | str) -> BaseDocumentModel | None:
+    def get_by_id(self, _id: int | str) -> T | None:
         path = next(iter([path for path in self._list_file_paths() if basename(path) == _id]))
 
         if not path:
@@ -57,12 +58,12 @@ class BaseDocumentRepository(BaseRepository, ABC):
 
         return instance
 
-    def get_by_path(self, path: str | Path) -> BaseDocumentModel | None:
+    def get_by_path(self, path: str | Path) -> T | None:
         if not isinstance(path, Path):
             path = Path(path)
         return self.get_by_id(path.stem)
 
-    def save(self, instance: BaseDocumentModel) -> BaseDocumentModel:
+    def save(self, instance: T) -> T:
         if instance.get_path():
             raise Exception(f'Instance already has path. Update instead.')
 
@@ -74,7 +75,7 @@ class BaseDocumentRepository(BaseRepository, ABC):
         return instance
 
     # noinspection PyMethodMayBeStatic
-    def update(self, instance: BaseDocumentModel) -> BaseDocumentModel:
+    def update(self, instance: T) -> T:
         with open(instance.get_path(), 'w', encoding='utf-8') as file:
             file.write(instance.contents)
 
