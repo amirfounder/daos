@@ -57,9 +57,10 @@ class BaseDocumentRepository(BaseRepository, ABC):
 
         return instance
 
-    def get_by_path(self, path: str) -> BaseDocumentModel | None:
-        _id = Path(path).stem
-        return self.get_by_id(_id)
+    def get_by_path(self, path: str | Path) -> BaseDocumentModel | None:
+        if not isinstance(path, Path):
+            path = Path(path)
+        return self.get_by_id(path.stem)
 
     def save(self, instance: BaseDocumentModel) -> BaseDocumentModel:
         if instance.get_path():
