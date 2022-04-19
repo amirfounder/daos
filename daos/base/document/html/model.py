@@ -12,4 +12,4 @@ class BaseHtmlDocumentModel(BaseDocumentModel, ABC):
         self.soup: Optional[BeautifulSoup] = None
 
     def load_soup(self):
-        self.soup = BeautifulSoup(self.contents, 'html.parser')
+        self.soup = BeautifulSoup(self._contents, 'html.parser')

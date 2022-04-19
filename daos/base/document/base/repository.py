@@ -70,14 +70,14 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
         instance.set_path(self._next_document_path())
 
         with open(instance.get_path(), 'w', encoding='utf-8') as file:
-            file.write(instance.contents)
+            file.write(instance.get_contents())
 
         return instance
 
     # noinspection PyMethodMayBeStatic
     def update(self, instance: T) -> T:
         with open(instance.get_path(), 'w', encoding='utf-8') as file:
-            file.write(instance.contents)
+            file.write(instance.get_contents())
 
         return instance
 
