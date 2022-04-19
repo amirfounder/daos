@@ -57,7 +57,7 @@ def test_gets():
     car = car_repository.get_by_id(1)
     assert car.id == 1
 
-    cars = car_repository.get_by_id_in_batch([1,2,3,4,5])
+    cars = car_repository.get_by_id_in_batch([1, 2, 3, 4, 5])
     assert len(cars) == 5
     car_ids = [c.id for c in cars]
     assert 1 in car_ids

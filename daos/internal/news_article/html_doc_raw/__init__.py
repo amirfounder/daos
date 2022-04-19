@@ -1,2 +1,2 @@
-from .repository import NewsArticleHtmlDocumentRepository
-from .model import NewsArticleHtmlDocumentModel
+from .model import NewsArticleHtmlDocumentRawModel
+from .repository import NewsArticleHtmlDocumentRawRepository

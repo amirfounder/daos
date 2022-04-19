@@ -1,7 +1,6 @@
 from abc import ABC
 from typing import Any, Optional
 
-from ntpath import basename
 from pathlib import Path
 
 from daos.base.base.model import BaseModel
