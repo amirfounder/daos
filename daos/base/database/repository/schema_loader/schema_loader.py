@@ -1,4 +1,4 @@
-from typing import List, Type
+from typing import List, Type, Tuple
 
 from sqlalchemy import Column, MetaData
 from sqlalchemy.engine import Engine
@@ -20,40 +20,51 @@ class SchemaLoader:
         self.metadata = metadata
         self.session_builder = session_builder
 
+    def _compile_type(self, column: Column):
+        return column.type.compile(dialect=self.engine.dialect)
+
     def _get_pgsql_columns_by_table(self, table: str):
         with self.session_builder.open() as session:
             return session.execute(
                 '''
-                select column_name
+                select column_name, data_type
                 from information_schema.columns
                 where table_name = '{table}'
                 and table_schema = 'public'
                 '''.format(table=table)
-            ).scalars().all()
+            ).all()
 
-    def _remove_columns(self, table: str, columns: List[str]):
-        drop_column_statements = ', '.join([f'DROP COLUMN {c}' for c in columns])
+    def _remove_columns(self, table: str, columns: List[List[str]]):
+        drop_column_statements = ', '.join([f'DROP COLUMN {c}' for c, _ in columns])
         alter_table_statement = f'ALTER TABLE {table} {drop_column_statements};'
         with self.session_builder.open() as session:
             session.execute(alter_table_statement)
 
-    def _create_columns(self, table: str, columns: List[Column]):
-        add_column_statements = ', '.join([f'ADD COLUMN {c.name} {c.type.compile(dialect=self.engine.dialect)}' for c in columns])
+    def _create_columns(self, table: str, columns: List[List[str]]):
+        add_column_statements = ', '.join([f'ADD COLUMN {n} {c}' for n, c in columns])
         alter_table_statement = f'ALTER TABLE {table} {add_column_statements}'
         with self.session_builder.open() as session:
             session.execute(alter_table_statement)
 
     def load(self):
         self.metadata.create_all(bind=self.engine)
-        for table in self.metadata.tables:
-            model_columns_map = self.model.get_columns()
-            model_columns = [k for k in model_columns_map]
-            pgsql_columns = self._get_pgsql_columns_by_table(table)
+        table = self.model.__tablename__
+        model_columns_map = self.model.get_columns()
+        model_columns: List[List[str]] = [[n, self._compile_type(c)] for n, c in model_columns_map.items()]
+        pgsql_columns: List[List[str]] = [[n, t.upper()] for n, t in self._get_pgsql_columns_by_table(table)]
 
-            columns_to_remove = [c for c in pgsql_columns if c not in model_columns]
-            columns_to_create = [model_columns_map.get(c) for c in model_columns if c not in pgsql_columns]
+        type_aliases = {
+            'VARCHAR': 'CHARACTER VARYING'
+        }
 
-            if columns_to_create:
-                self._create_columns(table, columns_to_create)
-            if columns_to_remove:
-                self._remove_columns(table, columns_to_remove)
+        for i, (n, t) in enumerate(model_columns):
+            if t in type_aliases:
+                model_columns[i][1] = type_aliases[t]
+
+        columns_to_remove = [c for c in pgsql_columns if c not in model_columns]
+        columns_to_create = [c for c in model_columns if c not in pgsql_columns]
+
+        if columns_to_remove:
+            self._remove_columns(table, columns_to_remove)
+        if columns_to_create:
+            self._create_columns(table, columns_to_create)
