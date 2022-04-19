@@ -38,7 +38,7 @@ class SchemaLoader:
             session.execute(alter_table_statement)
 
     def _create_columns(self, table: str, columns: List[Column]):
-        add_column_statements = ', '.join([f'ADD COLUMN {c.name} {c.type.compile()}' for c in columns])
+        add_column_statements = ', '.join([f'ADD COLUMN {c.name} {c.type.compile(dialect=self.engine.dialect)}' for c in columns])
         alter_table_statement = f'ALTER TABLE {table} {add_column_statements}'
         with self.session_builder.open() as session:
             session.execute(alter_table_statement)
