@@ -8,8 +8,9 @@ from daos.base.database.utils import Base
 
 
 class BaseDatabaseModel(AbstractConcreteBase, Base):
-    metadata: MetaData
+    __abstract__ = True
     __tablename__: str
+    metadata: MetaData
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)

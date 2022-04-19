@@ -1,9 +1,11 @@
 from sqlalchemy import Column, DateTime, BigInteger, String, Boolean
 
-from daos.base import BaseDatabaseModel as Base
+from daos.base import BaseDatabaseModel
+from daos.base.database.utils import Base
 
 
-class BaseHtmlDocumentIndexModel(Base):
+class BaseHtmlDocumentIndexModel(BaseDatabaseModel, Base):
+    __abstract__ = True
 
     retrieved_from_web_at = Column(DateTime(True))
     document_id = Column(BigInteger)

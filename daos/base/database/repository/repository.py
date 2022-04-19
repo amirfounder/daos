@@ -15,7 +15,7 @@ from daos.base.database.repository.sessions import SessionBuilder
 
 T = TypeVar('T')
 
-POSTGRESQL_CONNECTION_STRING = 'postgresql://postgres:root@localhost:5432/postgres',
+POSTGRESQL_CONNECTION_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
 
 class BaseDatabaseRepository(Generic[T]):

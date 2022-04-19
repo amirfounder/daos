@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Type, List
+from typing import Dict, Type, List, Generic, TypeVar
 
 from sqlalchemy import Column
 
@@ -11,11 +11,11 @@ from daos.base.database.extensions.factory.generators import (
     RandomIntGenerator,
     RandomStrGenerator
 )
-from daos.base.database.model.model import BaseDatabaseModel
+
+T = TypeVar('T')
 
 
-class BaseModelFactory:
-    # default generators
+class BaseModelFactory(Generic[T]):
     generator_map: Dict[Column | Type, RandomGenerator] = {
         str: RandomStrGenerator(),
         int: RandomIntGenerator(),
@@ -23,7 +23,7 @@ class BaseModelFactory:
         datetime: RandomDatetimeGenerator()
     }
     
-    def __init__(self, model: Type[BaseDatabaseModel], metadata: MetaData = MetaData,):
+    def __init__(self, model: Type[T], metadata: MetaData = MetaData,):
         self.model = model
         self.metadata = metadata
         self.current_build = {}
@@ -34,10 +34,10 @@ class BaseModelFactory:
 
         self.generator_map[key] = generator
 
-    def create_many(self, count: int) -> List[BaseDatabaseModel]:
+    def create_many(self, count: int) -> List[T]:
         return [self.create() for _ in range(count)]
 
-    def create(self) -> BaseDatabaseModel:
+    def create(self) -> T:
         for c in self.model.get_columns().values():
             if not c.primary_key:
                 key = c if c in self.generator_map else c.type.python_type

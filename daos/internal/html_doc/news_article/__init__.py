@@ -1,4 +1,3 @@
-from .index import *
-from .html_only import *
-from .raw import *
-from .no_js import *
+from .models import *
+from .repositories import *
+from .filter import *
