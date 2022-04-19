@@ -1,22 +1,29 @@
 from typing import Dict, Any, Type
 
-from sqlalchemy import func
+from sqlalchemy import func, Column
 
 from daos.base.database.model.model import BaseDatabaseModel
 
 
-class BaseFilterable:
+class BaseFilter:
     def __init__(self, model: Type[BaseDatabaseModel], params: Dict):
         self.model = model
         self.params = params
 
         self._clean_filters()
 
+    def _remove_filter(self, filter_key: str | Column):
+        del self.params[filter_key]
+
     def _clean_filters(self) -> None:
         columns = self.model.get_columns()
         for k, v in self.params.items():
-            if k.lower() not in columns:
-                del self.params[k]
+            if isinstance(k, str):
+                if k.lower() not in columns:
+                    self._remove_filter(k)
+            if isinstance(k, Column):
+                if k not in columns.values():
+                    self._remove_filter(k)
 
     def apply(self, sql_query: Any) -> Any:
         for key, value in self.params.items():

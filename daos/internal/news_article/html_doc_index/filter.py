@@ -1,6 +1,6 @@
 from typing import Dict
 
-from daos.base import BaseFilterable as Base
+from daos.base import BaseFilter as Base
 from .model import NewsArticleHtmlDocumentIndexModel as Model
 
 

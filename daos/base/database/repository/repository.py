@@ -9,7 +9,7 @@ from sqlalchemy.engine import create_engine
 from daos.base.database.utils import MetaData
 from daos.base.database.extensions.pagination.pageable import BasePageable
 from daos.base.database.extensions.pagination.pagedresult import PagedResult
-from daos.base.database.extensions.filtering import BaseFilterable
+from daos.base.database.extensions.filtering import BaseFilter
 from daos.base.database.model import BaseDatabaseModel
 from daos.base.database.repository.schema_loader import SchemaLoader
 from daos.base.database.repository.sessions import SessionBuilder
@@ -41,11 +41,11 @@ class BaseDatabaseRepository:
                 sql_query = pageable.apply(sql_query)
             return session.execute(sql_query).scalars().all()
 
-    def get_all_with_filters(self, filterable: BaseFilterable, pageable: Optional[BasePageable] = None)\
+    def get_all_by_filter(self, _filter: BaseFilter, pageable: Optional[BasePageable] = None)\
             -> List[BaseDatabaseModel] | PagedResult[BaseDatabaseModel]:
         with self.session_builder.open() as session:
             sql_query = select(self.model)
-            sql_query = filterable.apply(sql_query)
+            sql_query = _filter.apply(sql_query)
             if pageable:
                 sql_query = pageable.apply(sql_query)
             return session.execute(sql_query).scalars().all()
