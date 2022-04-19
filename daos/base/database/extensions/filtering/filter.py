@@ -21,14 +21,16 @@ class BaseFilter:
             if isinstance(k, str):
                 if k.lower() not in columns:
                     self._remove_filter(k)
+                else:
+                    self.params[k] = columns[k]
             if isinstance(k, Column):
                 if k not in columns.values():
                     self._remove_filter(k)
 
     def apply(self, sql_query: Any) -> Any:
-        for key, value in self.params.items():
+        for column, value in self.params.items():
             sql_query = sql_query.where(
-                getattr(self.model, key) == (
+                column == (
                     func.lower(value) if
                     isinstance(value, str)
                     else value
