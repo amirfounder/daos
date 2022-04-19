@@ -67,7 +67,8 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
         if instance.get_path():
             raise Exception(f'Instance already has path. Update instead.')
 
-        instance.set_path(self._next_document_path())
+        path = f'{self.path}/{_id}' if (_id := instance.get_id()) else self._next_document_path()
+        instance.set_path(path)
 
         with open(instance.get_path(), 'w', encoding='utf-8') as file:
             file.write(instance.get_contents())

@@ -15,18 +15,22 @@ class BaseDocumentModel(BaseModel, ABC):
     def get_id(self):
         return self._id
 
+    def set_id(self, _id: int | str):
+        self._id = int(_id)
+
     def get_path(self):
         return self._path
 
     def set_path(self, path: str | Path):
-        if not self._path:
-            self._path = path if isinstance(path, Path) else Path(path)
-            if self._path.stem.isdigit():
-                self._id = self._path.stem
-            else:
-                raise Exception(f'Path stem is not digit : {self._path}')
-        else:
+        if self._path:
             raise Exception(f'Cannot set path. Path already set : {self._path}')
+
+        self._path = path if isinstance(path, Path) else Path(path)
+
+        if not self._path.stem.isdigit():
+            raise Exception(f'Path stem is not digit : {self._path}')
+
+        self._id = self._path.stem
 
     def get_contents(self):
         return self._contents
