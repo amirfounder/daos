@@ -18,9 +18,9 @@ class BaseDocumentModel(BaseModel, ABC):
     def get_path(self):
         return self._path
 
-    def set_path(self, path: str):
+    def set_path(self, path: str | Path):
         if not self._path:
-            self._path = Path(path)
+            self._path = path if isinstance(path, Path) else Path(path)
             if self._path.stem.isdigit():
                 self._id = self._path.stem
             else:

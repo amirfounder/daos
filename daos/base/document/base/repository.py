@@ -53,7 +53,7 @@ class BaseDocumentRepository(BaseRepository, Generic[T], ABC):
             return
 
         instance = self.model()
-        instance.set_path(self._next_document_path())
+        instance.set_path(path)
         instance.read()
 
         return instance
