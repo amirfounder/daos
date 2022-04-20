@@ -38,7 +38,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         instance = self.model(**kwargs)
         instance.path = self._next_path()
 
-        self.save(instance)
+        return self.save(instance)
 
     def get_all(self):
         return [self.model(path=path, read_mode=self.read_mode) for path in listdir(self.path) if isfile(path)]
