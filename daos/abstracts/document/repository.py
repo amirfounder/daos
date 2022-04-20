@@ -34,7 +34,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         self.encoding = encoding
 
     def _next_path(self):
-        return self.path + str(len(listdir(self.path)) + 1) + self.filetype
+        return self.path + '/' + str(len(listdir(self.path)) + 1) + self.filetype
 
     def create(self, **kwargs):
         instance = self.model(**kwargs)
