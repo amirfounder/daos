@@ -1,7 +1,7 @@
-from sqlalchemy import Column, String, select
+from sqlalchemy import Column, String, select, Boolean
 
 from daos.base.database import BaseDatabaseModel, BaseDatabaseRepository
-from daos.base.database.extensions.factory.factory import BaseModelFactory
+from daos.base.database import BaseModelFactory
 
 CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
@@ -9,9 +9,9 @@ CONN_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 class Car(BaseDatabaseModel):
     __tablename__ = "carsss"
 
-    name = Column(String)
-    model = Column(String)
-    make = Column(String)
+    name = Column(Boolean())
+    model = Column(String())
+    make = Column(String())
 
 
 class CarRepository(BaseDatabaseRepository[Car]):

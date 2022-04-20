@@ -1,5 +1,5 @@
 from daos.base.document.html.repository import BaseHtmlDocumentRepository as Base
-from daos.base.database.repository import BaseDatabaseRepository
+from daos.base.database import BaseDatabaseRepository
 from daos.internal.paths import Paths
 
 from .models import (

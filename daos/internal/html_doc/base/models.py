@@ -1,7 +1,7 @@
 from sqlalchemy import Column, DateTime, BigInteger, String, Boolean
 
 from daos.base import BaseDatabaseModel
-from daos.base.database.utils import Base
+from daos.base.database import Base
 
 
 class BaseHtmlDocumentIndexModel(BaseDatabaseModel, Base):
