@@ -29,6 +29,8 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
     def create(self, **kwargs):
         instance = self.model(**kwargs)
+        instance.path = self._next_path()
+
         self.save(instance)
 
     def get_all(self):
@@ -40,15 +42,19 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
     def save(self, instance):
         if not instance.path:
             instance.path = self._next_path()
+
         with open(instance.path, mode=self.write_mode) as f:
             f.write(instance.contents)
+
         return instance
 
     def update(self, instance, mode='w'):
         if not instance.path:
             raise Exception('Path not set. Save instead ...')
+
         with open(instance.path, mode=self.write_mode) as f:
             f.write(instance.contents)
+
         return instance
 
     def delete(self, identifier):
