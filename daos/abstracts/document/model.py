@@ -30,5 +30,5 @@ class DocumentModel(BaseModel):
         self.contents = str(contents)
 
     def load_contents(self):
-        with open(self.path, self.read_mode) as f:
+        with open(self.path, self.read_mode, encoding=self.encoding) as f:
             self.contents = f.read()

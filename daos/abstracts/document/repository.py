@@ -47,7 +47,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         else:
             path = self._next_path()
 
-        instance = self.model(**kwargs)
+        instance = self.model(**kwargs, encoding=self.encoding, write_mode=self.write_mode, read_mode=self.read_mode)
         instance.set_path(path)
 
         return self.save(instance)
