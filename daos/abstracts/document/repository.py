@@ -33,12 +33,23 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         self.read_mode = read_mode
         self.encoding = encoding
 
+    def _path(self, identifier):
+        return self.path + '/' + identifier + self.filetype
+
     def _next_path(self):
-        return self.path + '/' + str(len(listdir(self.path)) + 1) + self.filetype
+        return self._path(str(len(listdir(self.path)) + 1))
 
     def create(self, **kwargs):
         instance = self.model(**kwargs)
-        instance.set_path(self._next_path())
+
+        if _id := kwargs.get('id'):
+            path = self._path(_id)
+        elif path := kwargs.get('path'):
+            path = path
+        else:
+            path = self._next_path()
+
+        instance.set_path(path)
 
         return self.save(instance)
 
