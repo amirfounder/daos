@@ -17,7 +17,7 @@ class BaseDocModel(BaseModel, ABC):
         self.filetype = filetype
         self.read_mode = read_mode
         self.write_mode = write_mode
-        self.pathlib_path = Path(path)
+        self.pathlib_path = Path(path or '')
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
         self.contents: Optional[str] = None
