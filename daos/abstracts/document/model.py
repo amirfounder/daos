@@ -6,7 +6,13 @@ from ..model import BaseModel
 
 
 class BaseDocModel(BaseModel, ABC):
-    def __init__(self, path: str, filetype: Optional[str], read_mode: str = 'r', write_mode: str = 'w'):
+    def __init__(
+            self,
+            path: Optional[str] = None,
+            filetype: Optional[str] = None,
+            read_mode: str = 'r',
+            write_mode: str = 'w'
+    ):
         self.path = path
         self.filetype = filetype
         self.read_mode = read_mode
