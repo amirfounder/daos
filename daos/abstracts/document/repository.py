@@ -43,7 +43,11 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         return self.save(instance)
 
     def get_all(self):
-        return [self.create(path=path) for file in listdir(self.path) if isfile((path := f'{self.path}/{file}'))]
+        return [
+            self.model(path=path, encoding=self.encoding) for
+            file in listdir(self.path) if
+            isfile((path := f'{self.path}/{file}'))
+        ]
 
     def get(self, identifier):
         return next(iter([i for i in self.get_all() if i.id == str(identifier)]), None)

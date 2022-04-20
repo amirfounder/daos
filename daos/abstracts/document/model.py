@@ -9,12 +9,14 @@ class DocumentModel(BaseModel):
             self,
             path: Optional[str] = None,
             read_mode: str = 'r',
-            write_mode: str = 'w'
+            write_mode: str = 'w',
+            encoding: str = 'utf-8'
     ):
+        self.set_path(path or '')
         self.read_mode = read_mode
         self.write_mode = write_mode
+        self.encoding = encoding
         self.contents: Optional[str] = ''
-        self.set_path(path or '')
 
     # noinspection PyAttributeOutsideInit
     def set_path(self, path: str):
