@@ -3,7 +3,7 @@ from typing import List, Type
 from sqlalchemy import Column, MetaData
 from sqlalchemy.engine import Engine
 
-from .model import BaseDatabaseModel
+from .model import BaseDBModel
 from .session_builder import SessionBuilder
 
 
@@ -11,7 +11,7 @@ class SchemaLoader:
     def __init__(
             self,
             engine: Engine,
-            model: Type[BaseDatabaseModel],
+            model: Type[BaseDBModel],
             metadata: MetaData,
             session_builder: SessionBuilder
     ):

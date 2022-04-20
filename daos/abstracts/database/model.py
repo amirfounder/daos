@@ -9,8 +9,9 @@ from .config import Base
 from ..model import BaseModel
 
 
-class BaseDatabaseModel(AbstractConcreteBase, BaseModel, Base):
+class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
     __abstract__ = True
+
     __tablename__: str
     metadata: MetaData
 
