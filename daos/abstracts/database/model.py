@@ -7,10 +7,9 @@ from peewee import (
     DateTimeField
 )
 
-from . import config
 from ..model import BaseModel
 
-database = PostgresqlDatabase(config.POSTGRESQL_DBNAME)
+database = PostgresqlDatabase('postgres')
 
 
 class BaseDBModel(BaseModel, ABC):

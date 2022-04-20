@@ -1,12 +1,12 @@
 from abc import ABC
+from typing import Generic, TypeVar
 
 from ..repository import BaseRepository
 
+T = TypeVar('T')
 
-class BaseDBRepository(BaseRepository, ABC):
-    def __init__(self, model):
-        super().__init__(model)
 
+class BaseDBRepository(BaseRepository[T], Generic[T], ABC):
     def get(self, identifier):
         return self.model.select(self.model).filter(id=identifier)
 

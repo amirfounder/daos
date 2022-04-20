@@ -1,9 +1,11 @@
 from abc import ABC
-from typing import Type
+from typing import TypeVar, Generic
 
 from ..repository import BaseDocRepository
 
+T = TypeVar('T')
 
-class BaseHtmlDocumentRepository(BaseDocRepository, ABC):
-    def __init__(self, model: Type, path: str):
-        super().__init__(model, path, '.html')
+
+class BaseHtmlDocRepository(BaseDocRepository[T], Generic[T], ABC):
+    def __init__(self, path: str):
+        super().__init__(path, '.html')
