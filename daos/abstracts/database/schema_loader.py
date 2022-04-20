@@ -1,10 +1,8 @@
 from typing import List, Type
 
-from sqlalchemy import Column, MetaData
-from sqlalchemy.engine import Engine
-
+from .config import engine, MetaData
 from .model import BaseDBModel
-from .session_builder import SessionBuilder
+from .session_context import SessionContext
 
 
 class SchemaLoader:
@@ -27,23 +25,12 @@ class SchemaLoader:
         'TIMESTAMPTZ': 'TIMESTAMP WITH TIME ZONE',
     }
 
-    def __init__(
-            self,
-            engine: Engine,
-            model: Type[BaseDBModel],
-            metadata: MetaData,
-            session_builder: SessionBuilder
-    ):
-        self.engine = engine
+    def __init__(self, model: Type[BaseDBModel]):
         self.model = model
-        self.metadata = metadata
-        self.session_builder = session_builder
-
-    def _compile_type(self, column: Column):
-        return column.type.compile(dialect=self.engine.dialect)
+        self.session = SessionContext
 
     def _get_pgsql_columns_by_table(self, table: str):
-        with self.session_builder.open() as session:
+        with self.session() as session:
             return session.execute(
                 '''
                 select column_name, data_type
@@ -56,20 +43,21 @@ class SchemaLoader:
     def _remove_columns(self, table: str, columns: List[List[str]]):
         drop_column_statements = ', '.join([f'DROP COLUMN {c}' for c, _ in columns])
         alter_table_statement = f'ALTER TABLE {table} {drop_column_statements};'
-        with self.session_builder.open() as session:
+        with self.session() as session:
             session.execute(alter_table_statement)
 
     def _create_columns(self, table: str, columns: List[List[str]]):
         add_column_statements = ', '.join([f'ADD COLUMN {n} {c}' for n, c in columns])
         alter_table_statement = f'ALTER TABLE {table} {add_column_statements}'
-        with self.session_builder.open() as session:
+        with self.session() as session:
             session.execute(alter_table_statement)
 
     def load(self):
-        self.metadata.create_all(bind=self.engine)
+        MetaData.create_all(bind=engine)
         table = self.model.__tablename__
         model_columns_map = self.model.get_columns()
-        model_columns: List[List[str]] = [[n, self._compile_type(c)] for n, c in model_columns_map.items()]
+        model_columns: List[List[str]] = \
+            [[n, c.type.compile(dialect=engine.dialect)] for n, c in model_columns_map.items()]
         pgsql_columns: List[List[str]] = [[n, t.upper()] for n, t in self._get_pgsql_columns_by_table(table)]
 
         for i, (n, t) in enumerate(model_columns):

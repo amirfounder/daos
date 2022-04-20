@@ -1,13 +1,13 @@
 from sqlalchemy.orm import Session
+from .config import engine
 
 
 class SessionContext:
-    def __init__(self, engine):
-        self.engine = engine
+    def __init__(self):
         self.session: Session
 
     def __enter__(self):
-        self.session = Session(bind=self.engine)
+        self.session = Session(bind=engine)
         self.session.begin()
         return self.session
 
@@ -19,12 +19,4 @@ class SessionContext:
         self.session.expunge_all()
         self.session.commit()
         self.session.close()
-
-
-class SessionBuilder:
-    def __init__(self, engine):
-        self.engine = engine
-
-    def open(self) -> SessionContext:
-        return SessionContext(self.engine)
 
