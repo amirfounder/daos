@@ -1,8 +1,10 @@
 import datetime
 from typing import Dict
 
+from inflector import Inflector
 from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
+from sqlalchemy.orm import declared_attr
 
 from .config import Base, MetaData
 
@@ -29,6 +31,24 @@ class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
     @classmethod
     def get_columns(cls) -> Dict[str, Column]:
         return {c.name: c for c in cls.metadata.tables.get(cls.__tablename__).columns}
+
+    # noinspection PyMethodParameters
+    @declared_attr
+    def __tablename__(cls):
+        name = Inflector().underscore(cls.__name__)
+
+        base: str = name
+        suffix: str
+
+        if name.endswith('y'):
+            base = name[-1]
+            suffix = 'ies'
+        elif name.endswith('s'):
+            suffix = 'es'
+        else:
+            suffix = 's'
+
+        return f'{base}{suffix}'
 
     def dict(self):
         return {n: v for n in self.get_columns() if (v := getattr(self, n))}
