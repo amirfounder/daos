@@ -1,10 +1,10 @@
 import datetime
 from typing import Dict
 
-from sqlalchemy import Integer, Column, DateTime, MetaData
+from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 
-from .config import Base
+from .config import Base, MetaData
 
 from ..model import BaseModel
 
@@ -21,12 +21,9 @@ class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
 
     def __init__(self, **kwargs):
         super().__init__()
-        self.created_at = datetime.datetime.now(datetime.timezone.utc)
-        self.created_at = datetime.datetime.now(datetime.timezone.utc)
+        columns = self.get_columns()
         for k, v in kwargs.items():
-            if k in (columns := self.get_columns()):
-                if columns.get(k).primary_key:
-                    raise Exception('Cannot assign primary key.')
+            if k in columns:
                 setattr(self, k, v)
 
     @classmethod
@@ -34,4 +31,4 @@ class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
         return {c.name: c for c in cls.metadata.tables.get(cls.__tablename__).columns}
 
     def dict(self):
-        return {n: v for n in self.get_columns() if (v := getattr(self, n, None))}
+        return {n: v for n in self.get_columns() if (v := getattr(self, n))}

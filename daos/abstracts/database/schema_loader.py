@@ -8,6 +8,25 @@ from .session_builder import SessionBuilder
 
 
 class SchemaLoader:
+    type_aliases = {
+        'VARCHAR': 'CHARACTER VARYING',
+        'INT8': 'BIGINT',
+        'SERIAL8': 'BIGSERIAL',
+        'VARBIT': 'BIT VARYING',
+        'BOOL': 'BOOLEAN',
+        'CHAR': 'CHARACTER',
+        'FLOAT8': 'DOUBLE PRECISION',
+        'INT': 'INTEGER',
+        'INT4': 'INTEGER',
+        'DECIMAL': 'NUMERIC',
+        'FLOAT4': 'REAL',
+        'INT2': 'SMALLINT',
+        'SERIAL2': 'SMALLSERIAL',
+        'SERIAL4': 'SERIAL',
+        'TIMETZ': 'TIME WITH TIME ZONE',
+        'TIMESTAMPTZ': 'TIMESTAMP WITH TIME ZONE',
+    }
+
     def __init__(
             self,
             engine: Engine,
@@ -53,13 +72,9 @@ class SchemaLoader:
         model_columns: List[List[str]] = [[n, self._compile_type(c)] for n, c in model_columns_map.items()]
         pgsql_columns: List[List[str]] = [[n, t.upper()] for n, t in self._get_pgsql_columns_by_table(table)]
 
-        type_aliases = {
-            'VARCHAR': 'CHARACTER VARYING'
-        }
-
         for i, (n, t) in enumerate(model_columns):
-            if t in type_aliases:
-                model_columns[i][1] = type_aliases[t]
+            if t in self.type_aliases:
+                model_columns[i][1] = self.type_aliases[t]
 
         columns_to_remove = [c for c in pgsql_columns if c not in model_columns]
         columns_to_create = [c for c in model_columns if c not in pgsql_columns]
