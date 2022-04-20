@@ -1,2 +1,2 @@
-from daos.base.database import *
+from daos.abstracts.database import *
 from .document import *

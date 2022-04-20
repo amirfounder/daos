@@ -1,12 +1,14 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Generic, TypeVar
 
-T = TypeVar('T')
+from .model import BaseModel
+
+T = TypeVar('T', bound=BaseModel)
 
 
 class BaseRepository(Generic[T], ABC):
-    def __init__(self):
-        self.model = T
+    def __init__(self, model: T):
+        self.model = model
 
     @abstractmethod
     def get_all(self) -> List[T]:

@@ -1,19 +1,15 @@
-from abc import ABC
 from datetime import datetime
 
 from peewee import (
-    PostgresqlDatabase,
-    BigIntegerField,
+    Model,
     DateTimeField
 )
 
 from ..model import BaseModel
+from .config import database
 
-database = PostgresqlDatabase('postgres')
 
-
-class BaseDBModel(BaseModel, ABC):
-    id = BigIntegerField(primary_key=True)
+class BaseDBModel(Model, BaseModel):
     created_at = DateTimeField(default=datetime.now())
     updated_at = DateTimeField(default=datetime.now())
 

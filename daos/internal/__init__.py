@@ -1,1 +1,2 @@
-from .html_doc import *
+from .abstracts import *
+from .document import *

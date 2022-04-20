@@ -1,5 +1,2 @@
-from abc import ABC
-
-
-class BaseModel(ABC):
+class BaseModel:
     pass
