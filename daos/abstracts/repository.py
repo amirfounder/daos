@@ -11,6 +11,10 @@ class BaseRepository(Generic[T], ABC):
         self.model = model
 
     @abstractmethod
+    def create(self) -> T:
+        pass
+
+    @abstractmethod
     def get_all(self) -> List[T]:
         pass
 

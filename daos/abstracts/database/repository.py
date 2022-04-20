@@ -32,6 +32,10 @@ class BaseDBRepository(Generic[T]):
         self.schema_loader = SchemaLoader(self.engine, self.model, self.metadata, self.session_builder)
         self.schema_loader.load()
 
+    def create(self, **kwargs):
+        instance = self.model(**kwargs)
+        return self.save(instance)
+
     def get(self, _id: int) -> T:
         with self.session_builder.open() as session:
             return session.get(self.model, _id)

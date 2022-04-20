@@ -24,6 +24,13 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         self.write_mode = write_mode
         self.read_mode = read_mode
 
+    def _next_path(self):
+        return self.path + str(len(listdir(self.path)) + 1) + self.filetype
+
+    def create(self, **kwargs):
+        instance = self.model(**kwargs)
+        self.save(instance)
+
     def get_all(self):
         return [self.model(path=path, read_mode=self.read_mode) for path in listdir(self.path) if isfile(path)]
 
@@ -32,7 +39,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
     def save(self, instance):
         if not instance.path:
-            instance.path = self.path + str(len(listdir(self.path)) + 1) + self.filetype
+            instance.path = self._next_path()
         with open(instance.path, mode=self.write_mode) as f:
             f.write(instance.contents)
         return instance
