@@ -1,13 +1,12 @@
 import datetime
-from typing import Dict
+from typing import Dict, Type
 
 from inflector import Inflector
 from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 from sqlalchemy.orm import declared_attr
-from sqlalchemy import MetaData
 
-from .config import Base
+from .config import Base, MetaData
 
 from ..model import BaseModel
 
@@ -16,7 +15,7 @@ class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
     __abstract__ = True
 
     __tablename__: str
-    metadata: MetaData
+    metadata: Type[MetaData]
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)
