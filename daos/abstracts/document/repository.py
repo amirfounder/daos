@@ -2,7 +2,7 @@ import os
 from abc import ABC
 from os import listdir
 from os.path import isfile
-from typing import TypeVar, Optional, Generic
+from typing import TypeVar, Optional, Generic, Type
 
 from ..repository import BaseRepository
 
@@ -10,8 +10,15 @@ T = TypeVar('T')
 
 
 class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
-    def __init__(self, path: Optional[str], filetype: str, write_mode: str = 'w', read_mode: str = 'r'):
-        super().__init__()
+    def __init__(
+            self,
+            model: Type[T],
+            path: Optional[str],
+            filetype: str,
+            write_mode: str = 'w',
+            read_mode: str = 'r'
+    ):
+        super().__init__(model)
 
         if not os.path.exists(path):
             os.makedirs(path)
