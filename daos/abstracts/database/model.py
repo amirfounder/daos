@@ -1,7 +1,8 @@
 import datetime
-from typing import Dict, Type
+from typing import Dict
 
 from inflector import Inflector
+
 from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 from sqlalchemy.orm import declared_attr

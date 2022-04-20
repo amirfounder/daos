@@ -1,4 +1,3 @@
-from peewee import TextField
 from sqlalchemy import Column, String
 
 from daos.abstracts.database import BaseDBModel, BaseDBRepository
