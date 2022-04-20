@@ -20,7 +20,7 @@ class BaseDocModel(BaseModel, ABC):
         self.pathlib_path = Path(path or '')
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
-        self.contents: Optional[str] = None
+        self.contents: Optional[str] = ''
 
     def load_contents(self, contents: Any):
         self.contents = str(contents)
