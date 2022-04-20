@@ -8,7 +8,7 @@ from ..model import BaseDocModel
 
 class BaseHtmlDocModel(BaseDocModel, ABC):
     def __init__(self, path: Optional[str] = None):
-        super().__init__(path, '.html')
+        super().__init__(path)
         self.soup: Optional[BeautifulSoup] = None
 
     def load_soup(self):

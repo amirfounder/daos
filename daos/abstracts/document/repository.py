@@ -38,7 +38,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
     def create(self, **kwargs):
         instance = self.model(**kwargs)
-        instance.path = self._next_path()
+        instance.set_path(self._next_path())
 
         return self.save(instance)
 
@@ -50,7 +50,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
     def save(self, instance):
         if not instance.path:
-            instance.path = self._next_path()
+            instance.set_path(self._next_path())
 
         with open(instance.path, mode=self.write_mode, encoding=self.encoding) as f:
             f.write(instance.contents)

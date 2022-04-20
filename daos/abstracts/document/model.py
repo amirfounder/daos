@@ -9,18 +9,21 @@ class BaseDocModel(BaseModel, ABC):
     def __init__(
             self,
             path: Optional[str] = None,
-            filetype: Optional[str] = None,
             read_mode: str = 'r',
             write_mode: str = 'w'
     ):
-        self.path = path
-        self.filetype = filetype
         self.read_mode = read_mode
         self.write_mode = write_mode
-        self.pathlib_path = Path(path or '')
+        self.contents: Optional[str] = ''
+        self.set_path(path or '')
+
+    # noinspection PyAttributeOutsideInit
+    def set_path(self, path: str):
+        self.path = path
+        self.pathlib_path = Path(path)
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
-        self.contents: Optional[str] = ''
+        self.filetype = self.pathlib_path.suffix
 
     def load_contents(self, contents: Any):
         self.contents = str(contents)
