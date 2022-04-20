@@ -15,7 +15,6 @@ class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
     __abstract__ = True
 
     __tablename__: str
-    metadata: Type[MetaData]
 
     id = Column(Integer, primary_key=True)
     created_at = Column(DateTime(True), default=datetime.datetime.utcnow)
@@ -30,7 +29,7 @@ class BaseDBModel(AbstractConcreteBase, BaseModel, Base):
 
     @classmethod
     def get_columns(cls) -> Dict[str, Column]:
-        return {c.name: c for c in cls.metadata.tables.get(cls.__tablename__).columns}
+        return {c.name: c for c in MetaData.tables.get(cls.__tablename__).columns}
 
     # noinspection PyMethodParameters
     @declared_attr
