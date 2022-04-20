@@ -40,15 +40,14 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         return self._path(str(len(listdir(self.path)) + 1))
 
     def create(self, **kwargs):
-        instance = self.model(**kwargs)
-
-        if _id := kwargs.get('id'):
+        if _id := kwargs.pop('id', None):
             path = self._path(_id)
-        elif path := kwargs.get('path'):
+        elif path := kwargs.pop('path', None):
             path = path
         else:
             path = self._next_path()
 
+        instance = self.model(**kwargs)
         instance.set_path(path)
 
         return self.save(instance)
