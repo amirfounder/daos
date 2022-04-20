@@ -9,7 +9,7 @@ from sqlalchemy.engine import create_engine
 from .config import MetaData
 from .filter import BaseFilter
 from .schema_loader import SchemaLoader
-from .sessions import SessionBuilder
+from .session_builder import SessionBuilder
 
 T = TypeVar('T')
 

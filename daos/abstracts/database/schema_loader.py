@@ -4,7 +4,7 @@ from sqlalchemy import Column, MetaData
 from sqlalchemy.engine import Engine
 
 from .model import BaseDatabaseModel
-from .sessions import SessionBuilder
+from .session_builder import SessionBuilder
 
 
 class SchemaLoader:
