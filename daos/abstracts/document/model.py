@@ -24,9 +24,9 @@ class DocumentModel(BaseModel):
         self.id = self.pathlib_path.stem
         self.filetype = self.pathlib_path.suffix
 
-    def load_contents(self, contents: Any):
+    def set_contents(self, contents: Any):
         self.contents = str(contents)
 
-    def load_contents_from_system(self):
+    def load_contents(self):
         with open(self.path, self.read_mode) as f:
             self.contents = f.read()
