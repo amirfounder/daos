@@ -1,34 +1,94 @@
-from abc import ABC
-from typing import Generic, TypeVar
+from __future__ import annotations
 
+from datetime import timezone, datetime
+from typing import List, Optional, Type, TypeVar, Generic
+
+from sqlalchemy import select, insert, update, delete
+from sqlalchemy.engine import create_engine
+
+from .config import MetaData
+from .filter import BaseFilter
 from .schema_loader import SchemaLoader
-from ..repository import BaseRepository
-
-from .config import database
+from .sessions import SessionBuilder
 
 T = TypeVar('T')
 
+POSTGRESQL_CONNECTION_STRING = 'postgresql://postgres:root@localhost:5432/postgres'
 
-class BaseDBRepository(BaseRepository[T], Generic[T], ABC):
-    def __init__(self, model: T):
-        super().__init__(model)
-        self.schema_loader = SchemaLoader(database, model)
+
+class BaseDatabaseRepository(Generic[T]):
+    def __init__(
+            self,
+            model: Type[T],
+            connection_string: str = POSTGRESQL_CONNECTION_STRING,
+            metadata: Optional[MetaData] = MetaData
+    ):
+        self.model = model
+        self.connection_string = connection_string
+        self.metadata = metadata
+
+        self.engine = create_engine(self.connection_string, future=True)
+        self.session_builder = SessionBuilder(self.engine)
+        self.schema_loader = SchemaLoader(self.engine, self.model, self.metadata, self.session_builder)
         self.schema_loader.load()
 
-    def create(self, **kwargs):
-        return self.model.create(**kwargs)
+    def get_by_id(self, _id: int) -> T:
+        with self.session_builder.open() as session:
+            return session.get(self.model, _id)
 
-    def get(self, identifier):
-        return self.model.select(self.model).filter(id=identifier)
+    def get_by_id_in_batch(self, ids: List[int]):
+        with self.session_builder.open() as session:
+            return session.execute(select(self.model).where(self.model.id.in_(ids))).scalars().all()
 
-    def get_all(self):
-        return self.model.select(self.model)
+    def get_all(self) -> List[T]:
+        with self.session_builder.open() as session:
+            sql_query = select(self.model)
+            return session.execute(sql_query).scalars().all()
 
-    def update(self, instance):
-        return self.model.update(self.model)
+    def get_all_by_filter(self, _filter: BaseFilter) -> List[T]:
+        with self.session_builder.open() as session:
+            sql_query = select(self.model)
+            sql_query = _filter.apply(sql_query)
+            return session.execute(sql_query).scalars().all()
 
-    def save(self, instance):
-        return instance.save()
+    def get_distinct_by_column(self, column_name: str):
+        with self.session_builder.open() as session:
+            if column_name not in self.model.get_columns():
+                raise Exception(f'Column not found : {self.model} - {column_name}.')
+            return session.execute(select(getattr(self.model, column_name)).distinct().scalars().all())
 
-    def delete(self, identifier):
-        return self.model.delete(self.model)
+    def save(self, instance: T) -> T:
+        now = datetime.now(timezone.utc)
+        instance.created_at = now
+        instance.updated_at = now
+        with self.session_builder.open() as session:
+            pk = session.execute(insert(self.model).values(instance.dict())).inserted_primary_key
+            return session.get(self.model, pk)
+
+    def save_in_batch(self, instances: List[T]) -> None:
+        for instance in instances:
+            now = datetime.now(timezone.utc)
+            instance.created_at = now
+            instance.updated_at = now
+        with self.session_builder.open() as session:
+            session.execute(insert(self.model).values([instance.dict() for instance in instances]))
+
+    def update(self, instance: T) -> T:
+        instance.updated_at = datetime.now(timezone.utc)
+        with self.session_builder.open() as session:
+            return session.execute(update(self.model).where(self.model.id == instance.id).values(instance.dict()))
+
+    def update_in_batch(self, instances: List[T]) -> None:
+        for instance in instances:
+            instance.updated_at = datetime.now(timezone.utc)
+        with self.session_builder.open() as session:
+            for instance in instances:
+                session.execute(update(self.model).where(self.model.id == instance.id).values(instance.dict()))
+
+    def delete(self, _id: int) -> None:
+        with self.session_builder.open() as session:
+            session.execute(delete(self.model).where(self.model.id == _id))
+
+    def delete_in_batch(self, ids: List[int]) -> None:
+        with self.session_builder.open() as session:
+            session.execute(delete(self.model).where(self.model.id in ids))

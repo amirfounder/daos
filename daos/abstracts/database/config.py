@@ -1,3 +1,6 @@
-from peewee import PostgresqlDatabase
+from sqlalchemy.orm import registry, DeclarativeMeta
+from sqlalchemy import MetaData
 
-database = PostgresqlDatabase('postgres', user='postgres', password='root')
+mapper_registry: registry = registry()
+Base: DeclarativeMeta = mapper_registry.generate_base()
+MetaData: MetaData = Base.metadata
