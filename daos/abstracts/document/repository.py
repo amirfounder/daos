@@ -16,7 +16,8 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
             path: Optional[str],
             filetype: str,
             write_mode: str = 'w',
-            read_mode: str = 'r'
+            read_mode: str = 'r',
+            encoding: str = 'utf-8'
     ):
         super().__init__(model)
 
@@ -30,6 +31,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         self.filetype = filetype
         self.write_mode = write_mode
         self.read_mode = read_mode
+        self.encoding = encoding
 
     def _next_path(self):
         return self.path + str(len(listdir(self.path)) + 1) + self.filetype
@@ -50,16 +52,16 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         if not instance.path:
             instance.path = self._next_path()
 
-        with open(instance.path, mode=self.write_mode) as f:
+        with open(instance.path, mode=self.write_mode, encoding=self.encoding) as f:
             f.write(instance.contents)
 
         return instance
 
-    def update(self, instance, mode='w'):
+    def update(self, instance):
         if not instance.path:
             raise Exception('Path not set. Save instead ...')
 
-        with open(instance.path, mode=self.write_mode) as f:
+        with open(instance.path, mode=self.write_mode, encoding=self.encoding) as f:
             f.write(instance.contents)
 
         return instance

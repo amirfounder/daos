@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='daos',
-    version='0.0.36',
+    version='0.0.37',
     packages=find_packages(),
     install_requires=[
         'SQLAlchemy==1.4.35',
