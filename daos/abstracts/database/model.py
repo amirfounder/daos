@@ -5,8 +5,9 @@ from inflector import Inflector
 from sqlalchemy import Integer, Column, DateTime
 from sqlalchemy.ext.declarative import AbstractConcreteBase
 from sqlalchemy.orm import declared_attr
+from sqlalchemy import MetaData
 
-from .config import Base, MetaData
+from .config import Base
 
 from ..model import BaseModel
 
