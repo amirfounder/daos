@@ -5,7 +5,7 @@ from sqlalchemy import func, Column
 T = TypeVar('T')
 
 
-class BaseFilter(Generic[T]):
+class Filter(Generic[T]):
     def __init__(self, model: Type[T], params: Dict):
         self.model = model
         self.params = params

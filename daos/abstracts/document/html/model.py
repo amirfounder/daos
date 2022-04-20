@@ -1,12 +1,11 @@
-from abc import ABC
 from typing import Optional
 
 from bs4 import BeautifulSoup
 
-from ..model import BaseDocModel
+from ..model import DocumentModel
 
 
-class BaseHtmlDocModel(BaseDocModel, ABC):
+class HtmlDocumentModel(DocumentModel):
     def __init__(self, path: Optional[str] = None):
         super().__init__(path)
         self.soup: Optional[BeautifulSoup] = None

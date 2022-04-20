@@ -1,11 +1,10 @@
-from abc import ABC
 from typing import Any, Optional
 from pathlib import Path
 
 from ..model import BaseModel
 
 
-class BaseDocModel(BaseModel, ABC):
+class DocumentModel(BaseModel):
     def __init__(
             self,
             path: Optional[str] = None,

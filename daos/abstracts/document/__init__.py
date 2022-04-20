@@ -1,3 +1,3 @@
 from .html import *
-from .model import BaseDocModel
+from .model import DocumentModel
 from .repository import BaseDocRepository

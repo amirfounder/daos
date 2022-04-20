@@ -1,2 +1,2 @@
-from .abstracts import *
+from .base import *
 from .documents import *

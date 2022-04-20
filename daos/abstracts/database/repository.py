@@ -1,11 +1,11 @@
 from __future__ import annotations
 
 from datetime import timezone, datetime
-from typing import List, Type, TypeVar, Generic
+from typing import List, Type, TypeVar, Generic, Dict
 
 from sqlalchemy import select, insert, update, delete
 
-from .filter import BaseFilter
+from .filter import Filter
 from .schema_loader import SchemaLoader
 from .session_context import SessionContext
 
@@ -34,10 +34,10 @@ class BaseDBRepository(Generic[T]):
             sql_query = select(self.model)
             return session.execute(sql_query).scalars().all()
 
-    def get_all_by_filter(self, _filter: BaseFilter) -> List[T]:
+    def get_all_by_filter(self, _filters: Dict) -> List[T]:
         with self.session() as session:
             sql_query = select(self.model)
-            sql_query = _filter.apply(sql_query)
+            sql_query = Filter(self.model, _filters).apply(sql_query)
             return session.execute(sql_query).scalars().all()
 
     def save(self, instance: T) -> T:

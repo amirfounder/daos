@@ -1,4 +1,3 @@
-from abc import ABC
 from datetime import datetime
 
 
@@ -8,8 +7,7 @@ from daos.abstracts.database.model import BaseDBModel
 from daos.abstracts.database.config import Base
 
 
-class BaseHtmlDocIndexModel(BaseDBModel, Base):
-    __abstract__ = True
+class HtmlDocumentIndexItem(BaseDBModel, Base):
 
     retrieved_from_web_at = Column(DateTime(True), default=datetime.utcnow)
     document_id = Column(BigInteger)
