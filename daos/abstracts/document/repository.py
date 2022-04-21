@@ -38,18 +38,24 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         return instance
 
     def get_all(self):
-        return [
-            self.model(path=path) for
-            filename in listdir(self.path) if
-            isfile((path := f'{self.path}/{filename}'))
-        ]
+        instances = []
+
+        for filename in listdir(self.path):
+            if isfile((path := self.path + '/' + filename)):
+                instance = self.model(path=path)
+                instance.load_contents()
+                instances.append(instance)
+
+        return instances
 
     def get(self, identifier: str | int):
         filename = next(iter([f for f in listdir(self.path) if f == str(identifier) + self.model.suffix]), None)
 
         if filename:
             path = self.path + '/' + filename
-            return self.model(path=path)
+            instance = self.model(path=path)
+            instance.load_contents()
+            return instance
 
     def save(self, instance):
         if not instance.path:
