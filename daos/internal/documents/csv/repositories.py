@@ -1,5 +1,5 @@
 from daos.abstracts.document.csv.repository import BaseCsvDocRepository as Repository
-from daos.abstracts.document.csv.model import CsvDocumentModel as Model
+from .models import RawHtmlDocumentFeaturesModel as Model
 
 
 class RawHtmlDocumentFeaturesRepository(Repository[Model]):

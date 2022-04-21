@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Dict, List
 
 from ..model import BaseModel
 
@@ -9,7 +10,7 @@ class DocumentModel(BaseModel):
     write_mode = 'w'
     encoding = 'utf-8'
 
-    def __init__(self, path: str = '', contents: str | bytes = ''):
+    def __init__(self, path: str = '', contents: str | bytes | List[Dict] = ''):
         self.set_path(path)
         self.contents = contents
 
