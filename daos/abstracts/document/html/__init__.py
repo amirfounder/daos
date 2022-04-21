@@ -1,2 +1,2 @@
-from .repository import BaseHtmlDocRepository
 from .model import HtmlDocumentModel
+from .repository import BaseHtmlDocRepository
