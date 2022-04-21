@@ -7,8 +7,7 @@ def path(*args):
 
 
 # Base
-PROJECT = '/ai-ml-project'
-DATA = '/data'
+BASE = 'C:/ai-ml-project/data'
 
 # Formats
 HTML = '/html'
@@ -20,8 +19,8 @@ RAW_HTML = '/raw-html'
 
 
 class Paths(Enum):
-    HTML_ONLY = path(PROJECT, DATA, HTML, HTML_ONLY)
-    HTML_ONLY_PDF = path(PROJECT, DATA, PDF, HTML_ONLY)
+    html_only = BASE + HTML + HTML_ONLY
+    raw_html = BASE + HTML + RAW_HTML
 
-    RAW_HTML = path(PROJECT, DATA, HTML, RAW_HTML)
-    RAW_HTML_PDF = path(PROJECT, DATA, PDF, RAW_HTML)
+    html_only_pdfs = BASE + PDF + HTML_ONLY
+    raw_html_pdfs = BASE + PDF + RAW_HTML
