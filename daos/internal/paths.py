@@ -7,7 +7,7 @@ def path(*args):
 
 
 # Base
-PROJECT = 'C:/ai-ml-project'
+PROJECT = '/ai-ml-project'
 DATA = '/data'
 
 # Formats
