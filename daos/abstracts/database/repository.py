@@ -31,12 +31,12 @@ class BaseDBRepository(Generic[T]):
 
     def get_all(self) -> List[T]:
         with self.session() as session:
-            sql_query = select(self.model)
+            sql_query = select(self.model).order_by(self.model.id)
             return session.execute(sql_query).scalars().all()
 
     def get_all_by_filter(self, _filters: Dict) -> List[T]:
         with self.session() as session:
-            sql_query = select(self.model)
+            sql_query = select(self.model).order_by(self.model.id)
             sql_query = Filter(self.model, _filters).apply(sql_query)
             return session.execute(sql_query).scalars().all()
 
