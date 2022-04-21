@@ -1,2 +1,2 @@
-from .base import *
+from .database import *
 from .documents import *
