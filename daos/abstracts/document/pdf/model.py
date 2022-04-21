@@ -9,4 +9,4 @@ class PdfDocumentModel(Base):
     write_mode = 'wb'
 
     def __init__(self, path: Optional[str] = None):
-        super().__init__(path)
+        super().__init__(path, contents=b'')
