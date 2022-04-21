@@ -2,7 +2,7 @@ import os
 from abc import ABC
 from os import listdir
 from os.path import isfile
-from typing import TypeVar, Optional, Generic, Type
+from typing import TypeVar, Optional, Generic, Type, List
 
 from ..repository import BaseRepository
 
@@ -18,13 +18,13 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         self.path = path
 
-    def build_path_from_id(self, identifier: str | int):
+    def build_path_from_id(self, identifier: str | int) -> str:
         return self.path + '/' + str(identifier) + self.model.suffix
 
-    def build_next_path(self):
+    def build_next_path(self) -> str:
         return self.build_path_from_id(str(len(listdir(self.path)) + 1))
 
-    def create(self, identifier: str | int = None, path: str = None):
+    def create(self, identifier: str | int = None, path: str = None) -> T:
         if identifier:
             path = self.build_path_from_id(str(identifier))
         elif path:
@@ -37,7 +37,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         return instance
 
-    def get_all(self, load_contents=True):
+    def get_all(self, load_contents=True) -> List[T]:
         instances = []
 
         for filename in listdir(self.path):
@@ -49,7 +49,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         return instances
 
-    def get(self, identifier: str | int, load_contents=True):
+    def get(self, identifier: str | int, load_contents=True) -> T:
         filename = next(iter([f for f in listdir(self.path) if f == str(identifier) + self.model.suffix]), None)
 
         if filename:
@@ -59,7 +59,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
                 instance.load_contents()
             return instance
 
-    def save(self, instance):
+    def save(self, instance) -> T:
         if not instance.path:
             instance.set_path(self.build_next_path())
 
@@ -67,7 +67,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         return instance
 
-    def update(self, instance):
+    def update(self, instance) -> T:
         if not instance.path:
             raise Exception('Path not set. Save instead ...')
 
@@ -75,7 +75,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         return instance
 
-    def delete(self, identifier: str | int):
+    def delete(self, identifier: str | int) -> None:
         instance = self.get(str(identifier))
         if instance:
             os.remove(instance.path)
