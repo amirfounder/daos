@@ -6,6 +6,6 @@ from ..repository import BaseDocRepository as Base
 T = TypeVar('T')
 
 
-class PdfDocumentRepository(Base[T], Generic[T], ABC):
+class BasePdfDocumentRepository(Base[T], Generic[T], ABC):
     def __init__(self, model: Type[T], path: str):
         super().__init__(model=model, path=path, filetype='.pdf')

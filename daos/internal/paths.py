@@ -2,16 +2,43 @@ from __future__ import annotations
 from enum import Enum
 
 
-class BasePaths(Enum):
-    NEWS_ARTICLE = 'C:/ai-ml-project/data/html/news-articles'
-    GOOGLE_SEARCH_RESULTS = 'C:/ai-ml-project/data/html/google-search-results'
+def path(*args):
+    return 'C:/{}/{}/{}/{}/{}'.format(*args)
 
 
-class Paths(Enum):
-    NEWS_ARTICLE_HTML_ONLY_DIR_PATH = BasePaths.NEWS_ARTICLE.value + '/html-only'
-    NEWS_ARTICLE_RAW_DIR_PATH = BasePaths.NEWS_ARTICLE.value + '/raw'
-    NEWS_ARTICLE_NO_JS_DIR_PATH = BasePaths.NEWS_ARTICLE.value + '/no-js'
-    
-    GOOGLE_SEARCH_RESULTS_HTML_ONLY_DIR_PATH = BasePaths.GOOGLE_SEARCH_RESULTS.value + '/html-only'
-    GOOGLE_SEARCH_RESULTS_RAW_DIR_PATH = BasePaths.GOOGLE_SEARCH_RESULTS.value + '/raw'
-    GOOGLE_SEARCH_RESULTS_NO_JS_DIR_PATH = BasePaths.GOOGLE_SEARCH_RESULTS.value + '/no-js'
+# Base
+PROJECT = 'C:/ai-ml-project'
+DATA = '/data'
+
+# Domains
+NEWS_ARTICLES = '/news-articles'
+GOOGLE_SEARCH_RESULTS = '/google-search-results'
+
+# Formats
+HTML = '/html'
+PDF = '/pdf'
+
+# Categories
+HTML_ONLY = '/html-only'
+RAW_HTML = '/raw-html'
+NO_JS = '/no-js'
+
+
+class GoogleSearchResults(Enum):
+    NO_JS = path(PROJECT, DATA, GOOGLE_SEARCH_RESULTS, HTML, NO_JS)
+
+    HTML_ONLY = path(PROJECT, DATA, GOOGLE_SEARCH_RESULTS, HTML, HTML_ONLY)
+    RAW_HTML = path(PROJECT, DATA, GOOGLE_SEARCH_RESULTS, HTML, RAW_HTML)
+
+    HTML_ONLY_PDF = path(PROJECT, DATA, GOOGLE_SEARCH_RESULTS, PDF, HTML_ONLY)
+    RAW_HTML_PDF = path(PROJECT, DATA, GOOGLE_SEARCH_RESULTS, PDF, RAW_HTML)
+
+
+class NewsArticles(Enum):
+    NO_JS = path(PROJECT, DATA, NEWS_ARTICLES, HTML, NO_JS)
+
+    HTML_ONLY = path(PROJECT, DATA, NEWS_ARTICLES, HTML, HTML_ONLY)
+    RAW_HTML = path(PROJECT, DATA, NEWS_ARTICLES, HTML, RAW_HTML)
+
+    HTML_ONLY_PDF = path(PROJECT, DATA, NEWS_ARTICLES, PDF, HTML_ONLY)
+    RAW_HTML_PDF = path(PROJECT, DATA, NEWS_ARTICLES, PDF, RAW_HTML)
