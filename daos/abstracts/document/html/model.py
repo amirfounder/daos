@@ -6,7 +6,7 @@ from ..model import DocumentModel
 
 
 class HtmlDocumentModel(DocumentModel):
-    filetype = '.html'
+    suffix = '.html'
 
     def __init__(self, path: Optional[str] = None):
         super().__init__(path)

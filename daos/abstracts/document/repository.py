@@ -18,38 +18,37 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         self.path = path
 
-    def _path(self, identifier):
-        return self.path + '/' + identifier + self.model.filetype
+    def build_path_from_id(self, identifier):
+        return self.path + '/' + identifier + self.model.suffix
 
-    def _next_path(self):
-        return self._path(str(len(listdir(self.path)) + 1))
+    def build_next_path(self):
+        return self.build_path_from_id(str(len(listdir(self.path)) + 1))
 
-    def create(self, **kwargs):
-        if _id := kwargs.pop('id', None):
-            path = self._path(_id)
-        elif path := kwargs.pop('path', None):
+    def create(self, identifier: str = None, path: str = None):
+        if identifier:
+            path = self.build_path_from_id(identifier)
+        elif path:
             path = path
         else:
-            path = self._next_path()
+            path = self.build_next_path()
 
-        instance = self.model(**kwargs)
-        instance.set_path(path)
-
+        instance = self.model(path=path)
         return self.save(instance)
 
     def get_all(self):
         return [
             self.model(path=path) for
-            file in listdir(self.path) if
-            isfile((path := f'{self.path}/{file}'))
+            filename in listdir(self.path) if
+            isfile((path := f'{self.path}/{filename}'))
         ]
 
-    def get(self, identifier):
-        return next(iter([i for i in self.get_all() if i.id == str(identifier)]), None)
+    def get(self, identifier: str):
+        filename = next(iter([f for f in listdir(self.path) if f == identifier + self.model.suffix]), None)
+        return self.model(path=self.path + '/' + filename)
 
     def save(self, instance):
         if not instance.path:
-            instance.set_path(self._next_path())
+            instance.set_path(self.build_next_path())
 
         with open(instance.path, mode=self.model.write_mode, encoding=self.model.encoding) as f:
             f.write(instance.contents)

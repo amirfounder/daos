@@ -5,7 +5,7 @@ from ..model import BaseModel
 
 
 class DocumentModel(BaseModel):
-    filetype = '.txt'
+    suffix = '.txt'
     read_mode = 'r'
     write_mode = 'w'
     encoding = 'uf-8'
@@ -14,16 +14,20 @@ class DocumentModel(BaseModel):
         self.set_path(path or '')
         self.contents: Optional[str] = contents or ''
 
+    def set_id(self, identifier: str):
+        self.set_path(identifier + self.suffix)
+
     # noinspection PyAttributeOutsideInit
     def set_path(self, path: str):
         self.path = path
         self.pathlib_path = Path(path)
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
-        self.filetype = self.pathlib_path.suffix
+        self.suffix = self.pathlib_path.suffix
 
-    def set_contents(self, contents: Any):
-        self.contents = str(contents)
+    def flush_contents(self):
+        with open(self.path, self.write_mode, encoding=self.encoding) as f:
+            f.write(self.contents)
 
     def load_contents(self):
         with open(self.path, self.read_mode, encoding=self.encoding) as f:
