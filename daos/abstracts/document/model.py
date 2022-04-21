@@ -26,9 +26,25 @@ class DocumentModel(BaseModel):
         self.suffix = self.pathlib_path.suffix
 
     def flush_contents(self):
-        with open(self.path, self.write_mode, encoding=self.encoding) as f:
+        kwargs = {
+            'file': self.path,
+            'mode': self.write_mode
+        }
+
+        if self.write_mode != 'wb':
+            kwargs['encoding'] = self.encoding
+
+        with open(**kwargs) as f:
             f.write(self.contents)
 
     def load_contents(self):
-        with open(self.path, self.read_mode, encoding=self.encoding) as f:
+        kwargs = {
+            'file': self.path,
+            'mode': self.read_mode
+        }
+
+        if self.read_mode != 'rb':
+            kwargs['encoding'] = self.encoding
+
+        with open(**kwargs) as f:
             self.contents = f.read()

@@ -2,7 +2,7 @@ import os
 from abc import ABC
 from os import listdir
 from os.path import isfile
-from typing import TypeVar, Optional, Generic, Type, Any
+from typing import TypeVar, Optional, Generic, Type
 
 from ..repository import BaseRepository
 
@@ -44,14 +44,16 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
     def get(self, identifier: str | int):
         filename = next(iter([f for f in listdir(self.path) if f == str(identifier) + self.model.suffix]), None)
-        return self.model(path=self.path + '/' + filename)
+
+        if filename:
+            path = self.path + '/' + filename
+            return self.model(path=path)
 
     def save(self, instance):
         if not instance.path:
             instance.set_path(self.build_next_path())
 
-        with open(instance.path, mode=self.model.write_mode, encoding=self.model.encoding) as f:
-            f.write(instance.contents)
+        instance.flush_contents()
 
         return instance
 
@@ -59,8 +61,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         if not instance.path:
             raise Exception('Path not set. Save instead ...')
 
-        with open(instance.path, mode=self.model.write_mode, encoding=self.model.encoding) as f:
-            f.write(instance.contents)
+        instance.flush_contents()
 
         return instance
 
