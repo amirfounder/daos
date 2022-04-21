@@ -8,10 +8,10 @@ from daos.abstracts.database.config import Base
 
 
 class DocumentIndexModel(BaseDBModel, Base):
-
     retrieved_from_web_at = Column(DateTime(True), default=datetime.utcnow)
+
+    url = Column(String)
     document_id = Column(BigInteger)
-    document_format = Column(String)
 
     raw_html_version_document_path = Column(String)
     raw_html_pdf_version_document_path = Column(String)
@@ -26,5 +26,3 @@ class DocumentIndexModel(BaseDBModel, Base):
     is_type_google_search_results = Column(Boolean, default=False)
 
     google_search_results_query = Column(String)
-
-    url = Column(String)
