@@ -4,8 +4,8 @@ from daos.internal.paths import Paths
 
 
 class RawHtmlDocumentRepository(Repository[Model]):
-    def __init__(self): super().__init__(Model, Paths.RAW_HTML.value)
+    def __init__(self): super().__init__(Model, Paths.raw_html.value)
 
 
 class HtmlOnlyHtmlDocumentRepository(Repository[Model]):
-    def __init__(self): super().__init__(Model, Paths.HTML_ONLY.value)
+    def __init__(self): super().__init__(Model, Paths.html_only.value)

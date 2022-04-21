@@ -4,8 +4,8 @@ from daos.internal.paths import Paths
 
 
 class RawHtmlPdfDocumentRepository(Repository[Model]):
-    def __init__(self): super().__init__(Model, Paths.RAW_HTML_PDF.value)
+    def __init__(self): super().__init__(Model, Paths.raw_html_pdfs.value)
 
 
 class HtmlOnlyPdfDocumentRepository(Repository[Model]):
-    def __init__(self): super().__init__(Model, Paths.HTML_ONLY_PDF.value)
+    def __init__(self): super().__init__(Model, Paths.html_only_pdfs.value)
