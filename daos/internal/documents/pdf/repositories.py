@@ -7,5 +7,5 @@ class RawHtmlPdfDocumentRepository(Repository[Model]):
     def __init__(self): super().__init__(Model, Paths.raw_html_pdfs.value)
 
 
-class HtmlOnlyPdfDocumentRepository(Repository[Model]):
-    def __init__(self): super().__init__(Model, Paths.html_only_pdfs.value)
+class ProcessedHtmlV1PdfDocumentRepository(Repository[Model]):
+    def __init__(self): super().__init__(Model, Paths.processed_html_v1_pdfs.value)

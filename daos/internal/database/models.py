@@ -15,15 +15,15 @@ class DocumentIndexModel(BaseDBModel, Base):
 
     raw_html_document_path = Column(String)
     raw_html_pdf_document_path = Column(String)
-    html_only_document_path = Column(String)
-    html_only_pdf_document_path = Column(String)
-    html_only_features_document_path = Column(String)
+    processed_html_v1_document_path = Column(String)
+    processed_html_v1_pdf_document_path = Column(String)
+    processed_html_v1_features_document_path = Column(String)
 
     is_raw_html_stored = Column(Boolean, default=False)
     is_raw_html_pdf_stored = Column(Boolean, default=False)
-    is_html_only_stored = Column(Boolean, default=False)
-    is_html_only_pdf_stored = Column(Boolean, default=False)
-    is_html_only_features_stored = Column(Boolean, default=False)
+    is_processed_html_v1_stored = Column(Boolean, default=False)
+    is_processed_html_v1_pdf_stored = Column(Boolean, default=False)
+    is_processed_html_v1_features_stored = Column(Boolean, default=False)
 
     is_type_google_search_results = Column(Boolean, default=False)
 

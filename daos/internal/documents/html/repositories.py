@@ -7,5 +7,5 @@ class RawHtmlDocumentRepository(Repository[Model]):
     def __init__(self): super().__init__(Model, Paths.raw_html.value)
 
 
-class HtmlOnlyHtmlDocumentRepository(Repository[Model]):
-    def __init__(self): super().__init__(Model, Paths.html_only.value)
+class ProcessedHtmlV1DocumentRepository(Repository[Model]):
+    def __init__(self): super().__init__(Model, Paths.processed_html_v1.value)

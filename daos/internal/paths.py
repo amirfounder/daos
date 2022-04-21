@@ -15,18 +15,18 @@ PDF = '/pdf'
 CSV = '/csv'
 
 # Categories
-HTML_ONLY = '/html-only'
+PROCESSED_HTML_V1 = '/processed-html-v1'
 RAW_HTML = '/raw-html'
 
 # Sub-categories
-HTML_ONLY_FEATURES = '/features' + HTML_ONLY
+PROCESSED_HTML_V1_FEATURES = '/features' + PROCESSED_HTML_V1
 
 
 class Paths(Enum):
-    html_only = BASE + HTML + HTML_ONLY
+    processed_html_v1 = BASE + HTML + PROCESSED_HTML_V1
     raw_html = BASE + HTML + RAW_HTML
 
-    html_only_pdfs = BASE + PDF + HTML_ONLY
+    processed_html_v1_pdfs = BASE + PDF + PROCESSED_HTML_V1
     raw_html_pdfs = BASE + PDF + RAW_HTML
 
-    html_only_features = BASE + CSV + HTML_ONLY_FEATURES
+    processed_html_v1_features = BASE + CSV + PROCESSED_HTML_V1_FEATURES
