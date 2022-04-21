@@ -14,8 +14,8 @@ class DocumentModel(BaseModel):
         self.set_path(path or '')
         self.contents: Optional[str] = contents or ''
 
-    def set_id(self, identifier: str):
-        self.set_path(identifier + self.suffix)
+    def set_id(self, identifier: str | int):
+        self.set_path(str(identifier) + self.suffix)
 
     # noinspection PyAttributeOutsideInit
     def set_path(self, path: str):

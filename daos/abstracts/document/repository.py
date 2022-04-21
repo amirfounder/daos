@@ -2,7 +2,7 @@ import os
 from abc import ABC
 from os import listdir
 from os.path import isfile
-from typing import TypeVar, Optional, Generic, Type
+from typing import TypeVar, Optional, Generic, Type, Any
 
 from ..repository import BaseRepository
 
@@ -18,15 +18,15 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         self.path = path
 
-    def build_path_from_id(self, identifier):
-        return self.path + '/' + identifier + self.model.suffix
+    def build_path_from_id(self, identifier: str | int):
+        return self.path + '/' + str(identifier) + self.model.suffix
 
     def build_next_path(self):
         return self.build_path_from_id(str(len(listdir(self.path)) + 1))
 
-    def create(self, identifier: str = None, path: str = None):
+    def create(self, identifier: str | int = None, path: str = None):
         if identifier:
-            path = self.build_path_from_id(identifier)
+            path = self.build_path_from_id(str(identifier))
         elif path:
             path = path
         else:
@@ -42,8 +42,8 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
             isfile((path := f'{self.path}/{filename}'))
         ]
 
-    def get(self, identifier: str):
-        filename = next(iter([f for f in listdir(self.path) if f == identifier + self.model.suffix]), None)
+    def get(self, identifier: str | int):
+        filename = next(iter([f for f in listdir(self.path) if f == str(identifier) + self.model.suffix]), None)
         return self.model(path=self.path + '/' + filename)
 
     def save(self, instance):
@@ -64,7 +64,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
 
         return instance
 
-    def delete(self, identifier):
-        instance = self.get(identifier)
+    def delete(self, identifier: str | int):
+        instance = self.get(str(identifier))
         if instance:
             os.remove(instance.path)
