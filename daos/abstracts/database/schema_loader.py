@@ -40,6 +40,7 @@ class SchemaLoader:
                 '''.format(table=table)
             ).all()
 
+    # TODO Do we want to remove columns for backwards compatibility?
     def _remove_columns(self, table: str, columns: List[List[str]]):
         drop_column_statements = ', '.join([f'DROP COLUMN {c}' for c, _ in columns])
         alter_table_statement = f'ALTER TABLE {table} {drop_column_statements};'
