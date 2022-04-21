@@ -1,6 +1,6 @@
 from daos import Paths
 from daos.abstracts.document.csv.repository import BaseCsvDocRepository as Repository
-from .models import RawHtmlDocumentFeaturesModel as Model
+from daos.abstracts.document.csv.model import CsvDocumentModel as Model
 
 
 class HtmlOnlyHtmlDocumentFeaturesRepository(Repository[Model]):
