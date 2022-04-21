@@ -12,5 +12,6 @@ class HtmlDocumentModel(DocumentModel):
         super().__init__(path)
         self.soup: Optional[BeautifulSoup] = None
 
-    def load_soup(self):
+    def load_soup(self) -> BeautifulSoup:
         self.soup = BeautifulSoup(self.contents, 'html.parser')
+        return self.soup

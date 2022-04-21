@@ -1,4 +1,3 @@
-from typing import Any, Optional
 from pathlib import Path
 
 from ..model import BaseModel
@@ -10,9 +9,9 @@ class DocumentModel(BaseModel):
     write_mode = 'w'
     encoding = 'utf-8'
 
-    def __init__(self, path: Optional[str] = '', contents: Optional[str | bytes] = ''):
+    def __init__(self, path: str = '', contents: str | bytes = ''):
         self.set_path(path)
-        self.contents: Optional[str] = contents
+        self.contents = contents
 
     def set_id(self, identifier: str | int):
         self.set_path(str(identifier) + self.suffix)
@@ -37,7 +36,7 @@ class DocumentModel(BaseModel):
         with open(**kwargs) as f:
             f.write(self.contents)
 
-    def load_contents(self):
+    def load_contents(self) -> bytes | str:
         kwargs = {
             'file': self.path,
             'mode': self.read_mode
@@ -48,3 +47,5 @@ class DocumentModel(BaseModel):
 
         with open(**kwargs) as f:
             self.contents = f.read()
+
+        return self.contents
