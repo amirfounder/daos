@@ -6,8 +6,10 @@ from ..model import DocumentModel
 
 
 class HtmlDocumentModel(DocumentModel):
-    def __init__(self, path: Optional[str] = None, *args, **kwargs):
-        super().__init__(path, *args, **kwargs)
+    filetype = '.html'
+
+    def __init__(self, path: Optional[str] = None):
+        super().__init__(path)
         self.soup: Optional[BeautifulSoup] = None
 
     def load_soup(self):

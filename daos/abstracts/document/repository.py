@@ -10,31 +10,16 @@ T = TypeVar('T')
 
 
 class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
-    def __init__(
-            self,
-            model: Type[T],
-            path: Optional[str],
-            filetype: str,
-            write_mode: str = 'w',
-            read_mode: str = 'r',
-            encoding: str = 'utf-8'
-    ):
+    def __init__(self, model: Type[T], path: Optional[str],):
         super().__init__(model)
 
         if not os.path.exists(path):
             os.makedirs(path)
 
-        if not filetype.startswith('.'):
-            filetype = '.' + filetype
-
         self.path = path
-        self.filetype = filetype
-        self.write_mode = write_mode
-        self.read_mode = read_mode
-        self.encoding = encoding
 
     def _path(self, identifier):
-        return self.path + '/' + identifier + self.filetype
+        return self.path + '/' + identifier + self.model.filetype
 
     def _next_path(self):
         return self._path(str(len(listdir(self.path)) + 1))
@@ -47,14 +32,14 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         else:
             path = self._next_path()
 
-        instance = self.model(**kwargs, encoding=self.encoding, write_mode=self.write_mode, read_mode=self.read_mode)
+        instance = self.model(**kwargs)
         instance.set_path(path)
 
         return self.save(instance)
 
     def get_all(self):
         return [
-            self.model(path=path, encoding=self.encoding) for
+            self.model(path=path) for
             file in listdir(self.path) if
             isfile((path := f'{self.path}/{file}'))
         ]
@@ -66,7 +51,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         if not instance.path:
             instance.set_path(self._next_path())
 
-        with open(instance.path, mode=self.write_mode, encoding=self.encoding) as f:
+        with open(instance.path, mode=self.model.write_mode, encoding=self.model.encoding) as f:
             f.write(instance.contents)
 
         return instance
@@ -75,7 +60,7 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
         if not instance.path:
             raise Exception('Path not set. Save instead ...')
 
-        with open(instance.path, mode=self.write_mode, encoding=self.encoding) as f:
+        with open(instance.path, mode=self.model.write_mode, encoding=self.model.encoding) as f:
             f.write(instance.contents)
 
         return instance

@@ -5,18 +5,14 @@ from ..model import BaseModel
 
 
 class DocumentModel(BaseModel):
-    def __init__(
-            self,
-            path: Optional[str] = None,
-            read_mode: str = 'r',
-            write_mode: str = 'w',
-            encoding: str = 'utf-8'
-    ):
+    filetype = '.txt'
+    read_mode = 'r'
+    write_mode = 'w'
+    encoding = 'uf-8'
+
+    def __init__(self, path: Optional[str] = None, contents: Optional[str] = None):
         self.set_path(path or '')
-        self.read_mode = read_mode
-        self.write_mode = write_mode
-        self.encoding = encoding
-        self.contents: Optional[str] = ''
+        self.contents: Optional[str] = contents or ''
 
     # noinspection PyAttributeOutsideInit
     def set_path(self, path: str):

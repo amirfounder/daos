@@ -8,4 +8,4 @@ T = TypeVar('T')
 
 class BaseHtmlDocRepository(BaseDocRepository[T], Generic[T], ABC):
     def __init__(self, model: Type[T], path: str):
-        super().__init__(model=model, path=path, filetype='.html')
+        super().__init__(model=model, path=path)
