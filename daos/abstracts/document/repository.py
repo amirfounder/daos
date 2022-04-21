@@ -33,7 +33,9 @@ class BaseDocRepository(BaseRepository[T], Generic[T], ABC):
             path = self.build_next_path()
 
         instance = self.model(path=path)
-        return self.save(instance)
+        instance.flush_contents()
+
+        return instance
 
     def get_all(self):
         return [

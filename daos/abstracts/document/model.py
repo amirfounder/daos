@@ -12,7 +12,7 @@ class DocumentModel(BaseModel):
 
     def __init__(self, path: Optional[str] = None, contents: Optional[str] = None):
         self.set_path(path or '')
-        self.contents: Optional[str] = contents or ''
+        self.contents: Optional[str] = contents or (b'' if self.write_mode == 'rb' else '')
 
     def set_id(self, identifier: str | int):
         self.set_path(str(identifier) + self.suffix)
