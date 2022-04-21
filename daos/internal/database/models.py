@@ -21,4 +21,7 @@ class DocumentIndexModel(BaseDBModel, Base):
     is_html_only_version_stored = Column(Boolean, default=False)
     is_pdf_version_stored = Column(Boolean, default=False)
 
+    is_google_search = Column(Boolean, default=False)
+    google_search_terms = Column(String)
+
     url = Column(String)
