@@ -13,15 +13,15 @@ class DocumentIndexModel(BaseDBModel, Base):
     url = Column(String)
     document_id = Column(BigInteger)
 
-    raw_html_version_document_path = Column(String)
-    raw_html_pdf_version_document_path = Column(String)
-    html_only_version_document_path = Column(String)
-    html_only_pdf_version_document_path = Column(String)
+    raw_html_document_path = Column(String)
+    raw_html_pdf_document_path = Column(String)
+    html_only_document_path = Column(String)
+    html_only_pdf_document_path = Column(String)
 
-    is_raw_html_version_stored = Column(Boolean, default=False)
-    is_raw_html_pdf_version_stored = Column(Boolean, default=False)
-    is_html_only_version_stored = Column(Boolean, default=False)
-    is_html_only_pdf_version_stored = Column(Boolean, default=False)
+    is_raw_html_stored = Column(Boolean, default=False)
+    is_raw_html_pdf_stored = Column(Boolean, default=False)
+    is_html_only_stored = Column(Boolean, default=False)
+    is_html_only_pdf_stored = Column(Boolean, default=False)
 
     is_type_google_search_results = Column(Boolean, default=False)
 
