@@ -6,7 +6,7 @@ T = TypeVar('T')
 
 
 class Filter(Generic[T]):
-    def __init__(self, model: Type[T], params: Dict):
+    def __init__(self, model: Type[T], params: Dict[Column, Any]):
         self.model = model
         self.params = params
 
@@ -24,12 +24,14 @@ class Filter(Generic[T]):
 
     def apply(self, sql_query: Any) -> Any:
         self._clean_filters()
-        for column, value in self.params.items():
+        for column, values in self.params.items():
+            if not isinstance(values, list):
+                values = [values]
+
             sql_query = sql_query.where(
-                column == (
-                    func.lower(value) if
-                    isinstance(value, str)
-                    else value
-                )
+                column.in_([
+                    func.lower(value) if isinstance(value, str) else value
+                    for value in values
+                ])
             )
         return sql_query

@@ -17,6 +17,7 @@ class CsvDocumentModel(DocumentModel):
         return self.field_names
 
     def flush_contents(self):
+        self._load_field_names()
         with open(self.path, self.write_mode, encoding=self.encoding, newline='') as file:
             writer = DictWriter(file, self.field_names)
             writer.writeheader()
