@@ -8,7 +8,7 @@ class DocumentModel(BaseModel):
     suffix = '.txt'
     read_mode = 'r'
     write_mode = 'w'
-    encoding = 'uf-8'
+    encoding = 'utf-8'
 
     def __init__(self, path: Optional[str] = None, contents: Optional[str] = None):
         self.set_path(path or '')
