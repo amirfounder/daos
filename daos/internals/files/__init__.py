@@ -1,1 +1,1 @@
-from .better_scraping_html_file import BetterScrapingHtmlFile
+from .scraped_html_file import ScrapedHtmlFile
