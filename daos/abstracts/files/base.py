@@ -74,12 +74,9 @@ class File:
                 if kwargs:
 
                     for k, v in kwargs.items():
-                        if hasattr(instance, k) and getattr(instance, k) == v:
+                        if not hasattr(instance, k) and not getattr(instance, k, None) == v:
+                            break
 
-                            if preload:
-                                instance.load()
-
-                            yield instance
                 else:
 
                     if preload:
