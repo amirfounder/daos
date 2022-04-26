@@ -14,6 +14,7 @@ class CsvDocumentModel(DocumentModel):
 
     def _load_field_names(self):
         self.field_names = list(set([key for obj in self.contents for key in obj.keys()]))
+        self.field_names.sort()
         return self.field_names
 
     def flush_contents(self):
