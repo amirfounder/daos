@@ -1,2 +1,2 @@
-from .model import BaseDBModel
-from .repository import BaseDBRepository
+from .base import Model
+from .setup_schema import setup_schema
