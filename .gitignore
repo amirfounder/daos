@@ -2,5 +2,4 @@
 **/__pycache__/**
 .pytest_cache/
 venv/
-dependency_injection.egg-info/
 daos.egg-info/
