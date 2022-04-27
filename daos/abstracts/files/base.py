@@ -73,13 +73,16 @@ class File:
 
                 if kwargs:
 
+                    failed_filter = False
                     for k, v in kwargs.items():
-                        if not getattr(instance, k, None) == v:
+                        if hasattr(instance, k) and getattr(instance, k, None) != v:
+                            failed_filter = True
                             break
 
-                else:
+                    if failed_filter:
+                        continue
 
-                    if load:
-                        instance.load()
+                if load:
+                    instance.load()
 
-                    yield instance
+                yield instance
