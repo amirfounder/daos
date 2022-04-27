@@ -65,7 +65,7 @@ class File:
             f.write(self.contents)
 
     @classmethod
-    def all(cls, preload: bool = True, **kwargs):
+    def all(cls, load: bool = False, **kwargs):
         cls._create_folders()
         for filename in listdir(cls.path):
             if isfile((path := cls.path + '/' + filename)):
@@ -79,7 +79,7 @@ class File:
 
                 else:
 
-                    if preload:
+                    if load:
                         instance.load()
 
                     yield instance
