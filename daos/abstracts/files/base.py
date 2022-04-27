@@ -74,7 +74,7 @@ class File:
                 if kwargs:
 
                     for k, v in kwargs.items():
-                        if not hasattr(instance, k) and not getattr(instance, k, None) == v:
+                        if not getattr(instance, k, None) == v:
                             break
 
                 else:
