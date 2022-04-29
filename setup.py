@@ -5,7 +5,7 @@ setup(
     version='0.1.12',
     packages=find_packages(),
     install_requires=[
-        'SQLAlchemy~=1.4.35',
-        'psycopg2>=2',
-        'bs4>=0.0.1',
+        'SQLAlchemy==1.4.35',
+        'psycopg2==2.9.3',
+        'bs4~=0.0.1',
     ])
