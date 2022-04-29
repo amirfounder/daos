@@ -1,4 +1,5 @@
 import json
+from typing import Dict
 
 from daos.abstracts.files.base import File
 
@@ -9,7 +10,7 @@ class JsonFile(File):
     def dict(self):
         return json.loads(self.contents)
 
-    def set_contents(self, contents: str | dict):
+    def set_contents(self, contents: str | Dict):
         if isinstance(contents, dict):
             contents = json.dumps(contents)
         self.contents = contents
