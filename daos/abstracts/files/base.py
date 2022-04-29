@@ -67,6 +67,7 @@ class File:
     @classmethod
     def all(cls, load: bool = False, **kwargs):
         cls._create_folders()
+
         for filename in listdir(cls.path):
             if isfile((path := cls.path + '/' + filename)):
                 instance = cls(path=path)
