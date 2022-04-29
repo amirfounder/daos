@@ -32,6 +32,9 @@ class File:
     def _next_document_path(self):
         return self.path + '/' + str(self._next_document_id()) + self.suffix
 
+    def set_contents(self, contents: Any):
+        self.contents = contents
+
     def load(self):
         if not self.path:
             raise Exception('No path specified.')
