@@ -78,7 +78,7 @@ class Model(Base):
                 if k.lower() not in columns:
                     del kwargs[k]
                 else:
-                    kwargs[k] = columns[k]
+                    k = columns[k]
             if isinstance(k, Column):
                 if k not in columns.values():
                     del kwargs[k]
