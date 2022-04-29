@@ -39,9 +39,9 @@ class Model(Base):
             if k in names:
                 setattr(self, k, v)
 
-    def load(self, id: int = None):
-        if id:
-            self.id = id
+    def load(self, _id: int = None):
+        if _id:
+            self.id = _id
 
         if not self.id:
             return
@@ -64,6 +64,15 @@ class Model(Base):
 
         with Session() as session:
             return session.execute(query)
+
+    @classmethod
+    def get_or_create(cls, **kwargs):
+        if not (result := cls.all(**kwargs)):
+            instance = cls(**kwargs)
+            instance.flush()
+            return instance
+        else:
+            return result
 
     @classmethod
     def all(cls, **kwargs):
