@@ -72,7 +72,7 @@ class Model(Base):
             instance.flush()
             return [instance] if return_list_if_one else instance
         else:
-            if not return_list_if_one and len(result) > 1:
+            if not return_list_if_one and len(result) == 1:
                 return result[0]
             return result
 
