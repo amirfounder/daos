@@ -8,6 +8,7 @@ class LogFile(File):
 
     @classmethod
     def log(cls, message: str):
+        cls._create_folders()
         last_doc_path = cls._last_document_path()
         size = getsize(last_doc_path)
         instance = cls() if size >= cls.max_file_size else cls(path=last_doc_path)
