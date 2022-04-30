@@ -12,4 +12,4 @@ class RssEntryIndexEntry(Model):
     source_id = Column(Integer, ForeignKey(RssEntrySource.id))
     file_path = Column(String)
     url = Column(String, unique=True)
-    has_been_scraped = Column(Boolean, default=False)
+    has_been_scraped = Column(Boolean, default=False, nullable=False)
