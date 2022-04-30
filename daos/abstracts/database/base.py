@@ -66,7 +66,7 @@ class Model(Base):
             return session.execute(query)
 
     @classmethod
-    def get_or_create(cls, return_list_if_one: bool = True, **kwargs):
+    def get_or_create(cls, return_list_if_one: bool = False, **kwargs):
         if not (result := cls.all(**kwargs)):
             instance = cls(**kwargs)
             instance.flush()
