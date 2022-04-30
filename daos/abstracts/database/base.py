@@ -1,4 +1,6 @@
+from __future__ import annotations
 from datetime import datetime, timezone
+from typing import Any, List, Dict
 
 from sqlalchemy import update, Column, Integer, DateTime, select, func, insert
 
@@ -14,8 +16,6 @@ class Model(Base):
     updated_at = Column(DateTime(True), default=datetime.utcnow)
 
     def __init__(self, **kwargs):
-        self.model = type(self)
-
         now = datetime.now(timezone.utc)
         self.created_at = now
         self.updated_at = now
@@ -23,23 +23,23 @@ class Model(Base):
         self.from_dict(kwargs)
 
     @classmethod
-    def columns(cls):
+    def columns(cls) -> List[Column]:
         return [c for c in MetaData.tables.get(cls.__tablename__).columns]
 
     @classmethod
-    def column_names(cls):
+    def column_names(cls) -> List[str]:
         return [c.name for c in cls.columns()]
 
-    def as_dict(self):
+    def as_dict(self) -> Dict:
         return {n: v for n in self.column_names() if (v := getattr(self, n, None))}
 
-    def from_dict(self, params):
+    def from_dict(self, params) -> None:
         names = self.column_names()
         for k, v in params.items():
             if k in names:
                 setattr(self, k, v)
 
-    def load(self, _id: int = None):
+    def load(self, _id: int = None) -> None:
         if _id:
             self.id = _id
 
@@ -51,7 +51,7 @@ class Model(Base):
 
         self.from_dict(result.as_dict())
 
-    def flush(self):
+    def flush(self) -> Model:
         now = datetime.now(timezone.utc)
         self.updated_at = now
 
@@ -66,7 +66,7 @@ class Model(Base):
             return session.execute(query)
 
     @classmethod
-    def distinct(cls, column: str | Column):
+    def distinct(cls, column: str | Column) -> List[Any]:
         columns = {c.name: c for c in cls.columns()}
 
         if isinstance(column, str) and column in columns:
@@ -78,7 +78,7 @@ class Model(Base):
             return session.execute(query).scalars().all()
 
     @classmethod
-    def get_or_create(cls, return_list_if_one: bool = False, **kwargs):
+    def get_or_create(cls, return_list_if_one: bool = False, **kwargs) -> Model | List[Model]:
         if not (result := cls.all(**kwargs)):
             instance = cls(**kwargs)
             instance.flush()
@@ -89,7 +89,7 @@ class Model(Base):
             return result
 
     @classmethod
-    def all(cls, **kwargs):
+    def all(cls, **kwargs) -> List[Model]:
         query = select(cls)
 
         columns = {c.name: c for c in cls.columns()}
@@ -121,6 +121,6 @@ class Model(Base):
         with Session() as session:
             return session.execute(query).scalars().all()
 
-    def delete(self):
+    def delete(self) -> None:
         with Session() as session:
             session.delete(self)
