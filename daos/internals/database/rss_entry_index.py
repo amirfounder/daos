@@ -6,7 +6,7 @@ from daos.abstracts.database.base import Model
 
 
 class RssEntryIndexEntry(Model):
-    __tablename__ = 'rss_entry_json_file_index'
+    __tablename__ = 'rss_entry_index'
 
     retrieved_at = Column(DateTime(True))
     source_id = Column(Integer, ForeignKey(RssEntrySource.id))
