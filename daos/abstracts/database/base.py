@@ -51,7 +51,7 @@ class Model(Base):
 
         self.from_dict(result.as_dict())
 
-    def flush(self) -> Model:
+    def flush(self):
         now = datetime.now(timezone.utc)
         self.updated_at = now
 
@@ -78,7 +78,7 @@ class Model(Base):
             return session.execute(query).scalars().all()
 
     @classmethod
-    def get_or_create(cls, return_list_if_one: bool = False, **kwargs) -> Model | List[Model]:
+    def get_or_create(cls, return_list_if_one: bool = False, **kwargs):
         if not (result := cls.all(**kwargs)):
             instance = cls(**kwargs)
             instance.flush()
@@ -89,7 +89,7 @@ class Model(Base):
             return result
 
     @classmethod
-    def all(cls, **kwargs) -> List[Model]:
+    def all(cls, **kwargs):
         query = select(cls)
 
         columns = {c.name: c for c in cls.columns()}
