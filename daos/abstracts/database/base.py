@@ -66,6 +66,18 @@ class Model(Base):
             return session.execute(query)
 
     @classmethod
+    def distinct(cls, column: str | Column):
+        columns = {c.name: c for c in cls.columns()}
+
+        if isinstance(column, str) and column in columns:
+            column = columns[column]
+
+        query = select(column).distinct()
+
+        with Session() as session:
+            return session.execute(query).scalars().all()
+
+    @classmethod
     def get_or_create(cls, return_list_if_one: bool = False, **kwargs):
         if not (result := cls.all(**kwargs)):
             instance = cls(**kwargs)
