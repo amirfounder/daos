@@ -47,7 +47,7 @@ class Model(Base):
             return
 
         with Session() as session:
-            result = session.get(self.model, self.id)
+            result = session.get(type(self), self.id)
 
         self.from_dict(result.as_dict())
 
@@ -57,10 +57,10 @@ class Model(Base):
 
         if not self.id:
             self.created_at = now
-            query = insert(self.model).values(self.as_dict())
+            query = insert(type(self)).values(self.as_dict())
 
         else:
-            query = update(self.model).where(self.model.id == self.id).values(self.as_dict())
+            query = update(type(self)).where(type(self).id == self.id).values(self.as_dict())
 
         with Session() as session:
             return session.execute(query)
