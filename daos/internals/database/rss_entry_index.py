@@ -1,4 +1,4 @@
-from sqlalchemy import Column, DateTime, String, Integer, ForeignKey
+from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, Boolean
 
 from .rss_entry_sources import RssEntrySource
 
@@ -11,4 +11,5 @@ class RssEntryIndexEntry(Model):
     retrieved_at = Column(DateTime(True))
     source_id = Column(Integer, ForeignKey(RssEntrySource.id))
     file_path = Column(String)
-    url = Column(String)
+    url = Column(String, unique=True)
+    has_been_scraped = Column(Boolean, default=False)
