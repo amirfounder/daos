@@ -120,3 +120,7 @@ class Model(Base):
 
         with Session() as session:
             return session.execute(query).scalars().all()
+
+    def delete(self):
+        with Session() as session:
+            session.delete(self)
