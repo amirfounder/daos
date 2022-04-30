@@ -27,6 +27,10 @@ class File:
             makedirs(cls.path)
 
     @classmethod
+    def _list_file_paths(cls):
+        return [cls.path + '/' + name + cls.suffix for name in listdir(cls.path)]
+
+    @classmethod
     def _next_document_id(cls):
         return len(listdir(cls.path)) + 1
 
