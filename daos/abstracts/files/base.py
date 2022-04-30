@@ -26,11 +26,17 @@ class File:
         if not exists(cls.path):
             makedirs(cls.path)
 
-    def _next_document_id(self):
-        return len(listdir(self.path)) + 1
+    @classmethod
+    def _next_document_id(cls):
+        return len(listdir(cls.path)) + 1
 
-    def _next_document_path(self):
-        return self.path + '/' + str(self._next_document_id()) + self.suffix
+    @classmethod
+    def _next_document_path(cls):
+        return cls.path + '/' + str(cls._next_document_id()) + cls.suffix
+
+    @classmethod
+    def _last_document_path(cls):
+        return cls.path + '/' + str(len(listdir(cls.path))) + cls.suffix
 
     def set_contents(self, contents: Any):
         self.contents = contents
