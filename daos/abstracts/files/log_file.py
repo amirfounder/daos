@@ -18,4 +18,4 @@ class LogFile(File):
             instance = cls() if size >= cls.max_file_size else cls(path=last_doc_path)
 
         with open(instance.path, 'a') as f:
-            f.write(message + '/n')
+            f.write(message + '\n')
