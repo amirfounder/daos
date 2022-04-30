@@ -66,12 +66,14 @@ class Model(Base):
             return session.execute(query)
 
     @classmethod
-    def get_or_create(cls, **kwargs):
+    def get_or_create(cls, return_list_if_one: bool = True, **kwargs):
         if not (result := cls.all(**kwargs)):
             instance = cls(**kwargs)
             instance.flush()
-            return instance
+            return [instance] if return_list_if_one else instance
         else:
+            if not return_list_if_one and len(result) > 1:
+                return result[0]
             return result
 
     @classmethod
