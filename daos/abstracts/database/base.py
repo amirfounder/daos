@@ -7,6 +7,7 @@ from sqlalchemy import update, Column, Integer, DateTime, select, func, insert
 from daos.abstracts.database.config import Base, MetaData, Session
 
 
+# noinspection PyPropertyDefinition
 class Model(Base):
     __abstract__ = True
     __tablename__: str
@@ -19,22 +20,23 @@ class Model(Base):
         now = datetime.now(timezone.utc)
         self.created_at = now
         self.updated_at = now
-
         self.from_dict(kwargs)
 
     @classmethod
+    @property
     def columns(cls) -> List[Column]:
         return [c for c in MetaData.tables.get(cls.__tablename__).columns]
 
     @classmethod
+    @property
     def column_names(cls) -> List[str]:
-        return [c.name for c in cls.columns()]
+        return [c.name for c in cls.columns]
 
     def as_dict(self) -> Dict:
-        return {n: v for n in self.column_names() if (v := getattr(self, n, None))}
+        return {n: v for n in self.column_names if (v := getattr(self, n, None))}
 
     def from_dict(self, params) -> None:
-        names = self.column_names()
+        names = self.column_names
         for k, v in params.items():
             if k in names:
                 setattr(self, k, v)
@@ -67,13 +69,12 @@ class Model(Base):
 
     @classmethod
     def distinct(cls, column: str | Column) -> List[Any]:
-        columns = {c.name: c for c in cls.columns()}
+        columns = {c.name: c for c in cls.columns}
 
         if isinstance(column, str) and column in columns:
             column = columns[column]
 
         query = select(column).distinct()
-
         with Session() as session:
             return session.execute(query).scalars().all()
 
@@ -92,7 +93,7 @@ class Model(Base):
     def all(cls, **kwargs):
         query = select(cls)
 
-        columns = {c.name: c for c in cls.columns()}
+        columns = {c.name: c for c in cls.columns}
 
         for k, vs in kwargs.items():
 
