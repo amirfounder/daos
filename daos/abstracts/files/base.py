@@ -1,3 +1,4 @@
+import os.path
 from os import listdir, makedirs
 from os.path import isfile, exists
 from pathlib import Path
@@ -5,7 +6,7 @@ from typing import Any
 
 
 class File:
-    path: str
+    dir_path: str
     read_mode: str = 'r'
     write_mode: str = 'w'
     suffix: str
@@ -21,26 +22,29 @@ class File:
 
     @classmethod
     def _create_folders(cls):
-        if isfile(cls.path):
-            raise Exception(f'Path is a file. Cannot create directory: {cls.path}')
-        if not exists(cls.path):
-            makedirs(cls.path)
+        if isfile(cls.dir_path):
+            raise Exception(f'Path is a file. Cannot create directory: {cls.dir_path}')
+        if not exists(cls.dir_path):
+            makedirs(cls.dir_path)
 
     @classmethod
     def _list_file_paths(cls):
-        return [cls.path + '/' + name + cls.suffix for name in listdir(cls.path)]
+        return [cls.dir_path + '/' + name + cls.suffix for name in listdir(cls.dir_path)]
 
     @classmethod
     def _next_document_id(cls):
-        return len(listdir(cls.path)) + 1
+        return len(listdir(cls.dir_path)) + 1
 
     @classmethod
     def _next_document_path(cls):
-        return cls.path + '/' + str(cls._next_document_id()) + cls.suffix
+        return cls.dir_path + '/' + str(cls._next_document_id()) + cls.suffix
 
     @classmethod
     def _last_document_path(cls):
-        return cls.path + '/' + str(len(listdir(cls.path))) + cls.suffix
+        return cls.dir_path + '/' + str(len(listdir(cls.dir_path))) + cls.suffix
+
+    def get_size(self):
+        return os.path.getsize(self.path)
 
     def set_contents(self, contents: Any):
         self.contents = contents
@@ -81,8 +85,8 @@ class File:
     def all(cls, load: bool = False, **kwargs):
         cls._create_folders()
 
-        for filename in listdir(cls.path):
-            if isfile((path := cls.path + '/' + filename)):
+        for path in cls._list_file_paths():
+            if isfile(path):
                 instance = cls(path=path)
 
                 if kwargs:
