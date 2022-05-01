@@ -20,6 +20,9 @@ class File:
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
 
+        if not exists(self.path):
+            open(self.path, 'x')
+
     @classmethod
     def _create_folders(cls):
         if isfile(cls.dir_path):
