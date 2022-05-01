@@ -10,7 +10,7 @@ class HtmlFile(File):
     def contents(self, value):
         if isinstance(value, BeautifulSoup):
             value = str(value)
-        super().contents = value
+        File.contents.fset(self, value)
 
     def soup(self):
         return BeautifulSoup(self.contents, 'html.parser')

@@ -10,7 +10,7 @@ class JsonFile(File):
     def contents(self, value):
         if isinstance(value, dict):
             value = json.dumps(value)
-        super().contents = value
+        File.contents.fset(self, value)
 
     def dict(self):
         return json.loads(self.contents)
