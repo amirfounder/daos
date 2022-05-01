@@ -21,7 +21,7 @@ class File:
         self.id = self.pathlib_path.stem
 
         if not exists(self.path):
-            open(self.path, 'x')
+            open(self.path, 'x').close()
 
     @classmethod
     def _create_folders(cls):
@@ -44,7 +44,10 @@ class File:
 
     @classmethod
     def _last_document_path(cls):
-        return cls.dir_path + '/' + str(len(listdir(cls.dir_path))) + cls.suffix
+        path = cls.dir_path + '/' + str(len(listdir(cls.dir_path))) + cls.suffix
+        if not exists(path):
+            open(path, 'x').close()
+        return path
 
     def get_size(self):
         return os.path.getsize(self.path)

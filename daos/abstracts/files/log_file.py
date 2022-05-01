@@ -5,6 +5,9 @@ class LogFile(File):
     suffix = '.log'
     max_file_size = 25 * 1000 * 1000
 
+    def __init__(self):
+        super().__init__(path=self._last_document_path())
+
     def log(self, message: str):
         if self.exceeds_max_size():
             raise Exception('Max file size reached.')
