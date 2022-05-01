@@ -65,10 +65,9 @@ class Model(Base):
             query = update(type(self)).where(type(self).id == self.id).values(self.as_dict())
 
         with Session() as session:
-            result = session.execute(query)
-            if not self.id:
-                self.id = result.inserted_primary_key[0]
-            return self
+            session.execute(query)
+
+        return self
 
     @classmethod
     def distinct(cls, column: str | Column) -> List[Any]:
