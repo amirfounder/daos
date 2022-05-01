@@ -43,16 +43,19 @@ class File:
     @classmethod
     @property
     def next_file_id(cls):
+        cls._create_folders()
         return cls.files_count + 1
 
     @classmethod
     @property
     def next_file_path(cls):
+        cls._create_folders()
         return cls.dir_path + '/' + str(cls.next_file_id) + cls.suffix
     
     @classmethod
     @property
     def last_file_path(cls):
+        cls._create_folders()
         if cls.files_count == 0:
             open((path := cls.next_file_path), 'x').close()
             return path
@@ -62,11 +65,13 @@ class File:
     @classmethod
     @property
     def files_count(cls) -> int:
+        cls._create_folders()
         return len(listdir(cls.dir_path))
 
     @classmethod
     @property
     def files(cls):
+        cls._create_folders()
         return [cls.dir_path + '/' + name + cls.suffix for name in listdir(cls.dir_path)]
 
     @property
@@ -112,7 +117,6 @@ class File:
     @classmethod
     def all(cls, load: bool = False, **kwargs):
         cls._create_folders()
-
         for path in cls.files:
             if isfile(path):
                 instance = cls(path=path)
