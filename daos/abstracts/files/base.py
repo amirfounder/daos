@@ -19,6 +19,7 @@ class File:
         self.pathlib_path = Path(self.path)
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
+        self.flush()
 
     @classmethod
     def create_folders(cls):
