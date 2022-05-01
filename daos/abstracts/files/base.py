@@ -5,17 +5,19 @@ from pathlib import Path
 from typing import Any
 
 
+# noinspection PyPropertyDefinition,PyTypeChecker
 class File:
     dir_path: str
     read_mode: str = 'r'
     write_mode: str = 'w'
     suffix: str
     encoding: str = 'utf-8'
+    max_file_size: int = 25 * 1000 * 1000
 
     def __init__(self, contents: Any = '', path: str = None):
         self._create_folders()
-        self.contents = contents
-        self.path = path or self._next_document_path()
+        self._contents = contents
+        self.path = path or self.next_file_path
         self.pathlib_path = Path(self.path)
         self.filename = self.pathlib_path.name
         self.id = self.pathlib_path.stem
@@ -30,30 +32,50 @@ class File:
         if not exists(cls.dir_path):
             makedirs(cls.dir_path)
 
+    @property
+    def contents(self):
+        return self._contents
+
+    @contents.setter
+    def contents(self, value):
+        self._contents = value
+    
     @classmethod
-    def _list_file_paths(cls):
+    @property
+    def next_file_id(cls):
+        return cls.files_count + 1
+
+    @classmethod
+    @property
+    def next_file_path(cls):
+        return cls.dir_path + '/' + str(cls.next_file_id) + cls.suffix
+    
+    @classmethod
+    @property
+    def last_file_path(cls):
+        if cls.files_count == 0:
+            open((path := cls.next_file_path), 'x').close()
+            return path
+        else:
+            return cls.dir_path + '/' + str(cls.files_count) + cls.suffix
+
+    @classmethod
+    @property
+    def files_count(cls) -> int:
+        return len(listdir(cls.dir_path))
+
+    @classmethod
+    @property
+    def files(cls):
         return [cls.dir_path + '/' + name + cls.suffix for name in listdir(cls.dir_path)]
 
-    @classmethod
-    def _next_document_id(cls):
-        return len(listdir(cls.dir_path)) + 1
-
-    @classmethod
-    def _next_document_path(cls):
-        return cls.dir_path + '/' + str(cls._next_document_id()) + cls.suffix
-
-    @classmethod
-    def _last_document_path(cls):
-        path = cls.dir_path + '/' + str(len(listdir(cls.dir_path))) + cls.suffix
-        if not exists(path):
-            open(path, 'x').close()
-        return path
-
-    def get_size(self):
+    @property
+    def size(self):
         return os.path.getsize(self.path)
 
-    def set_contents(self, contents: Any):
-        self.contents = contents
+    @property
+    def exceeds_max_file_size(self):
+        return self.size > self.max_file_size
 
     def load(self):
         if not self.path:
@@ -74,7 +96,7 @@ class File:
 
     def flush(self):
         if not self.path:
-            self.path = self._next_document_path()
+            self.path = self.next_file_path
 
         kwargs = {
             'file': self.path,
@@ -91,7 +113,7 @@ class File:
     def all(cls, load: bool = False, **kwargs):
         cls._create_folders()
 
-        for path in cls._list_file_paths():
+        for path in cls.files:
             if isfile(path):
                 instance = cls(path=path)
 

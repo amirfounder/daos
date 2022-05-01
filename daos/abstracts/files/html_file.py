@@ -6,10 +6,11 @@ from daos.abstracts.files.base import File
 class HtmlFile(File):
     suffix = '.html'
 
-    def set_contents(self, contents: str | BeautifulSoup):
-        if isinstance(contents, BeautifulSoup):
-            contents = str(contents)
-        super().set_contents(contents)
+    @File.contents.setter
+    def contents(self, value):
+        if isinstance(value, BeautifulSoup):
+            value = str(value)
+        super().contents = value
 
     def soup(self):
         return BeautifulSoup(self.contents, 'html.parser')
